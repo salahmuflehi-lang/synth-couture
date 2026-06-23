@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="lang-en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Synth Couture Studio — Work & Project Requests</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================================
+   SYNTH COUTURE STUDIO
+   Theme: visionOS spatial glass — deep warm-black space, frosted floating
+   panels, warm amber glow. Multi-page: Work grid -> category pages -> request.
+   Single file. Media lives in ./assets — keep the folder together when hosting.
+   Edit CONFIG + WORKS in the script below to add work, services, prices, copy.
+   ========================================================================== */
+:root{
+  --bg:#0D0C0B;--bg-2:#15120F;
+  --glass:rgba(255,255,255,.055);--glass-2:rgba(255,255,255,.085);
+  --glass-line:rgba(255,255,255,.12);--glass-line-2:rgba(255,255,255,.22);
+  --ink:#F5EFE7;--ink-2:#BCB2A6;--ink-3:#837A6E;
+  --amber:#FFB070;--amber-strong:#FF9442;--amber-soft:rgba(255,160,90,.16);--amber-glow:rgba(255,150,70,.42);
+  --slate:#84A8B2;--ok:#86C28C;--warn:#FFB070;--stop:#F2876B;
+  --r:22px;--r-sm:14px;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --display:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --glass-shadow:0 30px 80px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.14);
+}
+.lang-ar{--sans:"Tajawal",-apple-system,"Segoe UI",sans-serif;--display:"Tajawal",sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.55;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;position:relative;min-height:100vh}
+body::before,body::after{content:"";position:fixed;z-index:-2;border-radius:50%;filter:blur(120px);pointer-events:none}
+body::before{width:60vw;height:60vw;inset-block-start:-18vw;inset-inline-end:-12vw;
+  background:radial-gradient(circle,rgba(255,150,70,.30),transparent 65%);animation:drift1 22s var(--ease) infinite alternate}
+body::after{width:55vw;height:55vw;inset-block-end:-20vw;inset-inline-start:-15vw;
+  background:radial-gradient(circle,rgba(90,130,150,.22),transparent 65%);animation:drift2 26s var(--ease) infinite alternate}
+@keyframes drift1{to{transform:translate(-6%,8%) scale(1.12)}}
+@keyframes drift2{to{transform:translate(8%,-6%) scale(1.1)}}
+.grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+  background:radial-gradient(120% 80% at 50% 0%,transparent 40%,rgba(0,0,0,.55) 100%)}
+img{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--amber-soft)}
+
+/* ---- top bar ---- */
+.bar{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;
+  padding:16px clamp(20px,5vw,64px);background:rgba(13,12,11,.55);
+  backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);
+  border-block-end:1px solid var(--glass-line)}
+.mark{display:flex;align-items:baseline;gap:10px;cursor:pointer}
+.mark .glyph{font-family:var(--display);font-size:21px;font-weight:500;letter-spacing:-.01em;line-height:1}
+.mark .sub{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--amber)}
+.lang-ar .mark .sub{letter-spacing:.12em}
+.nav{display:flex;align-items:center;gap:6px}
+.navlink{padding:8px 14px;border-radius:100px;font-size:13px;color:var(--ink-2);transition:.25s var(--ease)}
+.navlink:hover{color:var(--ink);background:var(--glass)}
+.navlink.on{color:var(--amber)}
+.bar-actions{display:flex;align-items:center;gap:8px}
+.ghost{border:1px solid var(--glass-line);background:var(--glass);color:var(--ink-2);
+  padding:8px 15px;border-radius:100px;font-size:12.5px;letter-spacing:.01em;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:.3s var(--ease)}
+.ghost:hover{border-color:var(--glass-line-2);color:var(--ink);background:var(--glass-2)}
+@media(max-width:680px){.nav .navlink{padding:8px 10px;font-size:12px}.mark .sub{display:none}}
+
+/* ---- pages ---- */
+.page{display:none}
+.page.active{display:block;animation:pageIn .6s var(--ease)}
+@keyframes pageIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.wrap{max-width:1240px;margin-inline:auto;padding-inline:clamp(20px,5vw,64px)}
+
+/* ---- hero (home) ---- */
+.hero{text-align:center;padding:clamp(54px,9vw,110px) 0 clamp(30px,5vw,56px);max-width:880px;margin-inline:auto}
+.eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-block-end:22px}
+.lang-ar .eyebrow{letter-spacing:.1em}
+.hero h1{font-family:var(--display);font-weight:200;font-size:clamp(42px,7vw,86px);line-height:1.02;letter-spacing:-.025em;margin-block-end:22px}
+.hero h1 em{font-style:normal;font-weight:500;color:transparent;
+  background:linear-gradient(120deg,var(--amber),var(--amber-strong));-webkit-background-clip:text;background-clip:text}
+.lang-ar .hero h1{font-weight:300;letter-spacing:-.01em}
+.hero .lede{font-size:clamp(15px,1.6vw,18px);color:var(--ink-2);max-width:54ch;margin:0 auto;font-weight:300}
+.hero-cta{display:flex;gap:12px;justify-content:center;margin-block-start:34px;flex-wrap:wrap}
+
+/* ---- buttons ---- */
+.cta{background:linear-gradient(120deg,var(--amber),var(--amber-strong));color:#2a1808;border:none;
+  padding:14px 28px;border-radius:100px;font-size:14px;font-weight:600;letter-spacing:.01em;
+  box-shadow:0 10px 30px var(--amber-glow);transition:.3s var(--ease);display:inline-block}
+.cta:hover{transform:translateY(-2px);box-shadow:0 14px 38px var(--amber-glow)}
+.cta:disabled{background:rgba(255,255,255,.1);color:var(--ink-3);cursor:not-allowed;box-shadow:none;transform:none}
+.cta.outline{background:transparent;color:var(--ink);border:1px solid var(--glass-line-2);box-shadow:none}
+.cta.outline:hover{background:var(--glass);border-color:var(--amber);transform:translateY(-2px)}
+
+/* ---- reveal ---- */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+
+/* ---- section head ---- */
+.sec-title{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:clamp(28px,5vw,56px) 0 24px;flex-wrap:wrap}
+.sec-title h2{font-family:var(--display);font-weight:300;font-size:clamp(24px,3vw,34px);letter-spacing:-.01em}
+.sec-title p{font-size:13px;color:var(--ink-3)}
+
+/* ---- work grid ---- */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.8vw,22px)}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.tile{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:4/5;cursor:pointer;
+  border:1px solid var(--glass-line);box-shadow:0 22px 50px rgba(0,0,0,.4);
+  transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.tile:hover{transform:translateY(-5px);box-shadow:0 32px 70px rgba(0,0,0,.55)}
+.tile .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.1s var(--ease)}
+.tile:hover .bg{transform:scale(1.06)}
+.tile .grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,7,6,.86) 0%,rgba(8,7,6,.22) 46%,rgba(8,7,6,.05) 100%)}
+.tile .meta{position:absolute;inset-block-end:0;inset-inline:0;padding:20px 20px 22px;z-index:2}
+.tile .kicker{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);margin-block-end:7px;display:flex;align-items:center;gap:8px}
+.lang-ar .tile .kicker{letter-spacing:.06em}
+.tile h3{font-family:var(--display);font-weight:400;font-size:22px;letter-spacing:-.01em;margin-block-end:4px}
+.tile .tag{font-size:12.5px;color:var(--ink-2);font-weight:300;line-height:1.4}
+.tile .play{position:absolute;inset-block-start:16px;inset-inline-end:16px;width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.12);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--glass-line-2);display:flex;align-items:center;justify-content:center;z-index:2;color:#fff}
+.tile.empty{background:var(--glass);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px)}
+.tile.empty .ph{position:absolute;inset:0}
+.tile.empty[data-accent=social] .ph{background:linear-gradient(150deg,#3f5a64,#1a2226)}
+.tile.empty[data-accent=editorial] .ph{background:linear-gradient(150deg,#7a5a38,#241c14)}
+.tile.empty[data-accent=color] .ph{background:linear-gradient(150deg,#5a5750,#26241f)}
+.tile.empty .badge-soon{position:absolute;inset-block-start:16px;inset-inline-end:16px;z-index:2;
+  font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);
+  border:1px solid var(--glass-line);padding:5px 10px;border-radius:100px;background:rgba(0,0,0,.25)}
+
+/* ---- fan carousel (home signature) ---- */
+.fan{position:relative;width:100%;height:clamp(380px,46vw,560px);margin-block:6px 8px;
+  display:flex;align-items:center;justify-content:center;overflow:visible}
+.fan-card{position:absolute;left:50%;top:50%;width:clamp(146px,16vw,216px);aspect-ratio:3/4.15;
+  border-radius:var(--r);overflow:hidden;cursor:pointer;will-change:transform;
+  border:1px solid var(--glass-line-2);box-shadow:0 26px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.16);
+  transform:translate(-50%,-50%);opacity:0;
+  transition:transform .6s cubic-bezier(.34,1.4,.5,1),opacity .6s var(--ease),box-shadow .4s var(--ease)}
+.fan-card:hover{box-shadow:0 38px 84px rgba(0,0,0,.62),0 0 0 1px var(--amber-soft)}
+.fan-card:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+.fan-card .fc-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.fan-card .fc-ph{position:absolute;inset:0}
+.fan-card[data-accent=social] .fc-ph{background:linear-gradient(150deg,#3f5a64,#1a2226)}
+.fan-card[data-accent=editorial] .fc-ph{background:linear-gradient(150deg,#7a5a38,#241c14)}
+.fan-card[data-accent=color] .fc-ph{background:linear-gradient(150deg,#5a5750,#26241f)}
+.fan-card .fc-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,7,6,.9) 0%,rgba(8,7,6,.18) 50%,transparent 100%)}
+.fan-card .fc-meta{position:absolute;inset-block-end:0;inset-inline:0;padding:14px 14px 15px;z-index:2}
+.fan-card .fc-kick{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin-block-end:5px;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lang-ar .fan-card .fc-kick{letter-spacing:.05em}
+.fan-card .fc-title{font-family:var(--display);font-weight:400;font-size:16px;letter-spacing:-.01em;line-height:1.1}
+.fan-card .fc-soon{position:absolute;inset-block-start:12px;inset-inline-end:12px;z-index:2;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--glass-line);padding:4px 8px;border-radius:100px;background:rgba(0,0,0,.3)}
+.fan-card .fc-play{position:absolute;inset-block-start:12px;inset-inline-end:12px;z-index:2;width:30px;height:30px;border-radius:50%;
+  background:rgba(255,255,255,.14);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--glass-line-2);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px}
+
+/* ---- category page ---- */
+.back{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--ink-2);margin:clamp(24px,4vw,40px) 0 18px;transition:.25s var(--ease)}
+.back:hover{color:var(--amber)}
+.cat-head{margin-block-end:30px}
+.cat-head .eyebrow{margin-block-end:14px}
+.cat-head h1{font-family:var(--display);font-weight:300;font-size:clamp(34px,5vw,58px);letter-spacing:-.02em;margin-block-end:12px}
+.cat-head .tag{font-size:clamp(15px,1.6vw,18px);color:var(--ink-2);font-weight:300;max-width:60ch}
+.cat-client{display:inline-flex;align-items:center;gap:9px;margin-block-start:18px;font-size:13px;color:var(--ink-3);
+  border:1px solid var(--glass-line);padding:8px 15px;border-radius:100px;background:var(--glass)}
+.cat-client b{color:var(--ink);font-weight:500}
+.cat-body{display:grid;grid-template-columns:1fr;gap:28px;margin-block-end:40px}
+
+/* video stage (9:16) */
+.stage{display:flex;gap:clamp(20px,3vw,40px);align-items:flex-start;flex-wrap:wrap}
+.phone{flex:none;width:min(330px,80vw);aspect-ratio:9/16;border-radius:30px;overflow:hidden;position:relative;
+  border:1px solid var(--glass-line-2);box-shadow:0 40px 90px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.18);background:#000}
+.phone video{width:100%;height:100%;object-fit:cover;display:block}
+.stage .copy{flex:1;min-width:240px}
+.stage .copy p{font-size:14.5px;color:var(--ink-2);font-weight:300;line-height:1.6;margin-block-end:18px}
+
+/* identity gallery */
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:760px){.gallery{grid-template-columns:repeat(2,1fr)}}
+.gallery .shot{border-radius:14px;overflow:hidden;border:1px solid var(--glass-line);cursor:zoom-in;
+  box-shadow:0 16px 40px rgba(0,0,0,.4);transition:transform .4s var(--ease)}
+.gallery .shot:hover{transform:translateY(-3px)}
+.gallery .shot img{width:100%;height:100%;object-fit:cover;aspect-ratio:16/9}
+
+/* empty category */
+.cat-empty{text-align:center;padding:60px 20px;border:1px dashed var(--glass-line-2);border-radius:var(--r);background:var(--glass)}
+.cat-empty h3{font-family:var(--display);font-weight:300;font-size:26px;margin-block-end:8px}
+.cat-empty p{font-size:14px;color:var(--ink-3);max-width:46ch;margin:0 auto 22px;font-weight:300}
+
+.cat-cta{display:flex;gap:12px;flex-wrap:wrap;align-items:center;padding-block:8px 70px}
+
+/* ---- form (request page) ---- */
+.req-grid{display:grid;grid-template-columns:1fr 372px;gap:clamp(28px,4vw,56px);align-items:start;padding-block-end:110px}
+@media(max-width:980px){.req-grid{grid-template-columns:1fr}}
+.req-head{padding:clamp(30px,5vw,56px) 0 8px;max-width:640px}
+.req-head h1{font-family:var(--display);font-weight:300;font-size:clamp(32px,4.5vw,52px);letter-spacing:-.02em;margin-block-end:12px}
+.req-head .lede{font-size:15px;color:var(--ink-2);font-weight:300}
+.form{display:flex;flex-direction:column;gap:16px}
+.sec{background:var(--glass);backdrop-filter:blur(40px) saturate(1.5);-webkit-backdrop-filter:blur(40px) saturate(1.5);
+  border:1px solid var(--glass-line);border-radius:var(--r);box-shadow:var(--glass-shadow);padding:clamp(20px,2.4vw,30px)}
+.sec-head2{display:flex;align-items:baseline;gap:14px;margin-block-end:20px}
+.sec-num{font-family:var(--display);font-size:15px;font-weight:300;color:var(--amber);min-width:26px;letter-spacing:.05em}
+.sec-head2 h2{font-size:16px;font-weight:600;letter-spacing:-.01em}
+.sec-head2 p{font-size:12.5px;color:var(--ink-3);margin-block-start:3px;font-weight:300}
+.field{margin-block-end:16px}.field:last-child{margin-block-end:0}
+.field>label{display:block;font-size:12.5px;font-weight:500;color:var(--ink-2);margin-block-end:7px}
+.field .hint{font-weight:300;color:var(--ink-3)}
+input[type=text],input[type=email],input[type=tel],input[type=number],input[type=date],textarea,select{
+  width:100%;font-family:inherit;font-size:14px;color:var(--ink);background:rgba(255,255,255,.05);
+  border:1px solid var(--glass-line);border-radius:var(--r-sm);padding:11px 13px;transition:.25s var(--ease);color-scheme:dark}
+input::placeholder,textarea::placeholder{color:var(--ink-3)}
+textarea{resize:vertical;min-height:88px;line-height:1.5}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber);
+  box-shadow:0 0 0 3px var(--amber-soft),0 0 22px var(--amber-glow);background:rgba(255,255,255,.07)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:520px){.row{grid-template-columns:1fr}}
+.chips{display:flex;flex-wrap:wrap;gap:9px}
+.chip{border:1px solid var(--glass-line);background:rgba(255,255,255,.04);color:var(--ink-2);
+  padding:9px 15px;border-radius:100px;font-size:12.5px;letter-spacing:.01em;transition:.25s var(--ease);user-select:none}
+.chip:hover{border-color:var(--glass-line-2);color:var(--ink);transform:translateY(-1px)}
+.chip.on{background:linear-gradient(120deg,var(--amber),var(--amber-strong));color:#2a1808;
+  border-color:transparent;box-shadow:0 6px 20px var(--amber-glow);font-weight:500}
+.seg{display:inline-flex;border:1px solid var(--glass-line);border-radius:100px;overflow:hidden;background:rgba(255,255,255,.04)}
+.seg button{border:none;background:transparent;color:var(--ink-2);padding:9px 18px;font-size:12.5px;transition:.25s var(--ease)}
+.seg button.on{background:linear-gradient(120deg,var(--amber),var(--amber-strong));color:#2a1808;font-weight:500}
+.notice{border-radius:var(--r-sm);padding:13px 15px;font-size:13px;margin-block-start:14px;display:flex;gap:11px;align-items:flex-start;line-height:1.45;border:1px solid;backdrop-filter:blur(10px)}
+.notice .dot{width:8px;height:8px;border-radius:50%;margin-block-start:6px;flex:none}
+.notice.is-ok{background:rgba(134,194,140,.08);border-color:rgba(134,194,140,.32);color:#a6d4ab}
+.notice.is-warn{background:rgba(255,176,112,.09);border-color:rgba(255,176,112,.34);color:var(--amber)}
+.notice.is-stop{background:rgba(242,135,107,.09);border-color:rgba(242,135,107,.36);color:#f4a48d}
+.notice.is-ok .dot{background:var(--ok)}.notice.is-warn .dot{background:var(--warn)}.notice.is-stop .dot{background:var(--stop)}
+.pace-tag{display:inline-block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;padding:5px 11px;border-radius:100px;border:1px solid var(--glass-line);color:var(--ink-2);margin-inline-start:8px}
+.pace-tag[data-pace=Express]{color:var(--stop);border-color:rgba(242,135,107,.4)}
+.pace-tag[data-pace=Rush]{color:var(--warn);border-color:rgba(255,176,112,.4)}
+.pace-tag[data-pace=Standard]{color:var(--ok);border-color:rgba(134,194,140,.4)}
+.submit-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-block-start:4px}
+.submit-row .small{font-size:12px;color:var(--ink-3)}
+.aside{position:sticky;top:88px}
+@media(max-width:980px){.aside{position:static}}
+.brief{position:relative;border-radius:var(--r);padding:26px 26px 28px;overflow:hidden;background:var(--glass-2);
+  backdrop-filter:blur(46px) saturate(1.6);-webkit-backdrop-filter:blur(46px) saturate(1.6);
+  border:1px solid var(--glass-line-2);box-shadow:0 36px 90px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.2)}
+.brief::before{content:"";position:absolute;inset-block-start:-40%;inset-inline-end:-20%;width:70%;height:70%;
+  background:radial-gradient(circle,var(--amber-soft),transparent 70%);pointer-events:none}
+.brief h3{font-family:var(--display);font-weight:300;font-size:20px;letter-spacing:-.01em;margin-block-end:4px}
+.brief .bsub{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--amber);margin-block-end:20px}
+.lang-ar .brief .bsub{letter-spacing:.08em}
+.brief dl{display:flex;flex-direction:column;gap:13px;position:relative;z-index:1}
+.brief .b-row{display:flex;flex-direction:column;gap:3px;padding-block-end:13px;border-block-end:1px solid rgba(255,255,255,.09)}
+.brief .b-row:last-child{border:none;padding-block-end:0}
+.brief dt{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.lang-ar .brief dt{letter-spacing:.05em}
+.brief dd{font-size:13.5px;color:var(--ink);min-height:1em}
+.brief dd.empty{color:var(--ink-3);font-style:italic}
+
+/* ---- status lookup ---- */
+.lookup-card{border-radius:var(--r);padding:clamp(22px,3vw,34px);margin-block:8px 90px;
+  background:var(--glass);backdrop-filter:blur(40px) saturate(1.5);-webkit-backdrop-filter:blur(40px) saturate(1.5);
+  border:1px solid var(--glass-line);box-shadow:var(--glass-shadow)}
+.lookup-card h2{font-family:var(--display);font-weight:300;font-size:26px;letter-spacing:-.01em;margin-block-end:6px}
+.lookup-card p{font-size:13px;color:var(--ink-3);margin-block-end:18px;font-weight:300}
+.lookup-form{display:flex;gap:10px;max-width:440px}
+.lookup-form input{flex:1}.lookup-form button{flex:none}
+.track{margin-block-start:24px;display:none}.track.show{display:block}
+.steps{display:flex;align-items:center;margin-block-start:8px}
+.step{flex:1;text-align:center;position:relative}
+.step .ball{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.16);margin:0 auto 8px;transition:.4s var(--ease);position:relative;z-index:2}
+.step.done .ball{background:var(--amber)}
+.step.now .ball{background:var(--amber);box-shadow:0 0 0 5px var(--amber-soft),0 0 18px var(--amber-glow)}
+.step:not(:first-child)::before{content:"";position:absolute;inset-block-start:6px;inset-inline-end:50%;width:100%;height:2px;background:rgba(255,255,255,.14);z-index:1}
+.step.done::before,.step.now::before{background:var(--amber)}
+.step span{font-size:11px;color:var(--ink-3)}.step.done span,.step.now span{color:var(--ink)}
+
+/* ---- footer ---- */
+.foot{border-block-start:1px solid var(--glass-line);padding:30px clamp(20px,5vw,64px);max-width:1240px;margin-inline:auto;
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink-3)}
+
+/* ---- overlay / modal ---- */
+.overlay{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;
+  background:rgba(8,7,6,.72);backdrop-filter:blur(8px);padding:20px}
+.overlay.show{display:flex;animation:fade .3s var(--ease)}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal{position:relative;border-radius:26px;width:100%;max-width:480px;padding:clamp(26px,4vw,40px);max-height:88vh;overflow:auto;
+  background:rgba(28,24,20,.72);backdrop-filter:blur(50px) saturate(1.6);-webkit-backdrop-filter:blur(50px) saturate(1.6);
+  border:1px solid var(--glass-line-2);box-shadow:0 50px 120px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.16);animation:pop .45s var(--ease)}
+.modal.wide{max-width:920px}
+@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+.modal h2{font-family:var(--display);font-weight:300;font-size:28px;letter-spacing:-.01em;margin-block-end:6px}
+.modal .x{position:absolute;inset-block-start:18px;inset-inline-end:18px;background:none;border:none;font-size:24px;color:var(--ink-3);line-height:1}
+.modal .x:hover{color:var(--ink)}
+.modal-wrap{position:relative}
+
+/* lightbox */
+.lightbox{position:fixed;inset:0;z-index:110;display:none;align-items:center;justify-content:center;
+  background:rgba(6,5,4,.9);backdrop-filter:blur(6px);padding:30px}
+.lightbox.show{display:flex;animation:fade .25s var(--ease)}
+.lightbox img{max-width:92vw;max-height:88vh;border-radius:12px;box-shadow:0 40px 100px rgba(0,0,0,.7);border:1px solid var(--glass-line-2)}
+.lb-nav{position:absolute;inset-inline:0;inset-block-start:50%;display:flex;justify-content:space-between;padding-inline:24px;pointer-events:none}
+.lb-nav button{pointer-events:auto;width:46px;height:46px;border-radius:50%;border:1px solid var(--glass-line-2);
+  background:rgba(255,255,255,.1);color:#fff;font-size:20px;backdrop-filter:blur(12px)}
+.lb-close{position:absolute;inset-block-start:24px;inset-inline-end:24px;width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--glass-line-2);background:rgba(255,255,255,.1);color:#fff;font-size:22px;backdrop-filter:blur(12px)}
+
+/* flux loader */
+.flux{display:flex;flex-direction:column;align-items:center;gap:26px;padding:18px 0 6px}
+.flux .phase{font-family:var(--display);font-weight:300;font-size:26px;color:var(--ink);height:36px;letter-spacing:-.01em;transition:opacity .4s var(--ease),transform .4s var(--ease)}
+.flux .track{width:100%;max-width:340px;height:16px;border-radius:100px;background:rgba(255,255,255,.08);overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.4)}
+.flux .fill{height:100%;width:0%;border-radius:100px;position:relative;
+  background:linear-gradient(90deg,var(--amber-strong),var(--amber) 45%,#ffd9b0 55%,var(--amber) 70%,var(--amber-strong));
+  box-shadow:0 0 18px var(--amber-glow);transition:width .4s var(--ease)}
+.flux .fill::after{content:"";position:absolute;inset:0;width:50%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+  animation:sheen 1.5s linear infinite;mix-blend-mode:screen}
+@keyframes sheen{from{transform:translateX(-110%)}to{transform:translateX(320%)}}
+.confirm{text-align:center}
+.confirm .seal{width:64px;height:64px;border-radius:50%;border:1px solid var(--amber);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--amber);font-size:28px;box-shadow:0 0 30px var(--amber-glow);animation:pop .5s .1s both var(--ease)}
+.confirm .id{font-family:var(--display);font-weight:400;font-size:32px;color:var(--amber);margin:14px 0 6px;letter-spacing:.02em}
+.confirm p{font-size:13.5px;color:var(--ink-2);margin-block-end:6px;font-weight:300}
+.copy-id{margin-block-start:16px;border:1px solid var(--glass-line);background:var(--glass);padding:11px 20px;border-radius:100px;font-size:13px;color:var(--ink-2);transition:.25s var(--ease)}
+.copy-id:hover{border-color:var(--amber);color:var(--ink)}
+
+/* admin */
+.admin-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-block-end:18px;flex-wrap:wrap}
+.admin-head h2{margin:0}
+.admin-stats{display:flex;gap:22px;font-size:12px;color:var(--ink-3)}
+.admin-stats b{display:block;font-family:var(--display);font-weight:300;font-size:24px;color:var(--ink)}
+.req-list{display:flex;flex-direction:column;gap:10px}
+.req{border:1px solid var(--glass-line);border-radius:var(--r-sm);padding:14px 16px;background:rgba(255,255,255,.04)}
+.req-top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;cursor:pointer}
+.req-id{font-family:var(--display);font-weight:400;font-size:17px;color:var(--amber)}
+.req-meta{font-size:12px;color:var(--ink-3)}
+.badge{font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:5px 11px;border-radius:100px;border:1px solid var(--glass-line)}
+.badge[data-s="0"]{color:var(--ink-2)}.badge[data-s="1"]{color:var(--warn);border-color:rgba(255,176,112,.4)}
+.badge[data-s="2"]{color:var(--slate);border-color:rgba(132,168,178,.4)}.badge[data-s="3"]{color:var(--ok);border-color:rgba(134,194,140,.4)}
+.req-body{margin-block-start:12px;font-size:13px;color:var(--ink-2);display:none;line-height:1.6}
+.req.open .req-body{display:block;animation:fade .3s}
+.req-body .kv{display:flex;gap:8px;padding:3px 0}
+.req-body .kv b{min-width:120px;color:var(--ink-3);font-weight:500;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase}
+.req-actions{display:flex;gap:8px;margin-block-start:14px;flex-wrap:wrap}
+.mini{border:1px solid var(--glass-line);background:var(--glass);padding:7px 13px;border-radius:100px;font-size:12px;color:var(--ink-2);transition:.25s var(--ease)}
+.mini:hover{border-color:var(--amber);color:var(--ink)}
+.mini.danger:hover{border-color:var(--stop);color:var(--stop)}
+.empty-state{text-align:center;padding:40px 20px;color:var(--ink-3);font-size:13px}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}body::before,body::after{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<header class="bar">
+  <div class="mark" data-nav="#/"><span class="glyph">Synth Couture</span><span class="sub" data-i18n="studioSub">Studio</span></div>
+  <nav class="nav">
+    <a class="navlink" data-nav="#/" data-i18n="navWork">Work</a>
+    <a class="navlink" data-nav="#/request" data-i18n="navRequest">Start a project</a>
+  </nav>
+  <div class="bar-actions">
+    <button class="ghost" id="langBtn">العربية</button>
+    <button class="ghost" id="adminBtn" data-i18n="studioAccess">Studio access</button>
+  </div>
+</header>
+
+<main>
+  <!-- ============ HOME ============ -->
+  <section class="page" id="page-home">
+    <div class="wrap">
+      <div id="work" class="sec-title reveal" style="margin-block-start:clamp(18px,3vw,32px)">
+        <h2 data-i18n="workH">Selected work</h2>
+        <p data-i18n="workP">Tap a discipline to see the work.</p>
+      </div>
+      <div class="fan" id="workFan"></div>
+
+      <div class="hero reveal" style="padding-block-start:clamp(16px,3vw,40px)">
+        <div class="eyebrow" data-i18n="eyebrow">Synth Couture Studio</div>
+        <h1 data-i18n="heroTitle">Brands, told <em>cinematically</em>.</h1>
+        <p class="lede" data-i18n="heroLede">A creative studio for brand films, AI-driven UGC, and identity systems — built with cinematic restraint and a Saudi sensibility. Browse the work, then start your project.</p>
+        <div class="hero-cta">
+          <a class="cta" data-nav="#/request" data-i18n="ctaRequest">Start a project</a>
+        </div>
+      </div>
+
+      <div class="sec-title reveal" style="margin-top:clamp(40px,6vw,72px)">
+        <h2 data-i18n="lookH">Track a request</h2>
+      </div>
+      <div class="lookup-card reveal">
+        <p data-i18n="lookP">Enter your request ID to see where it is in production.</p>
+        <div class="lookup-form">
+          <input type="text" id="lookupId" placeholder="SCS-000000-0000" dir="ltr" />
+          <button class="cta" id="lookupBtn" data-i18n="lookBtn">Track</button>
+        </div>
+        <div class="track" id="trackBox">
+          <div class="steps" id="trackSteps"></div>
+          <div class="notice is-ok" id="trackMsg" style="margin-block-start:18px"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CATEGORY ============ -->
+  <section class="page" id="page-work">
+    <div class="wrap"><div id="workView"></div></div>
+  </section>
+
+  <!-- ============ REQUEST ============ -->
+  <section class="page" id="page-request">
+    <div class="wrap">
+      <a class="back" data-nav="#/"><span>←</span><span data-i18n="backHome">Back</span></a>
+      <div class="req-head reveal">
+        <h1 data-i18n="reqH">Start a project</h1>
+        <p class="lede" data-i18n="reqLede">Tell us what you want made and when you need it. The clearer the brief, the faster it moves into production.</p>
+      </div>
+      <div class="req-grid">
+        <div class="form" id="form">
+
+          <div class="sec reveal">
+            <div class="sec-head2"><span class="sec-num">01</span><div><h2 data-i18n="s1h">Who's asking</h2><p data-i18n="s1p">So we know how to reach you.</p></div></div>
+            <div class="row">
+              <div class="field"><label data-i18n="fName">Your name</label><input type="text" data-k="name" /></div>
+              <div class="field"><label data-i18n="fBrand">Brand / company</label><input type="text" data-k="brand" /></div>
+            </div>
+            <div class="row">
+              <div class="field"><label data-i18n="fEmail">Email</label><input type="email" data-k="email" /></div>
+              <div class="field"><label data-i18n="fWa">WhatsApp</label><input type="tel" data-k="whatsapp" dir="ltr" /></div>
+            </div>
+          </div>
+
+          <div class="sec reveal">
+            <div class="sec-head2"><span class="sec-num">02</span><div><h2 data-i18n="s2h">What you need made</h2><p data-i18n="s2p">Pick all that apply.</p></div></div>
+            <div class="field"><div class="chips" id="serviceChips"></div></div>
+            <div class="field"><label data-i18n="fBrief">The brief <span class="hint" data-i18n="fBriefHint">— what's the idea, the goal, the feeling?</span></label><textarea data-k="brief"></textarea></div>
+          </div>
+
+          <div class="sec reveal">
+            <div class="sec-head2"><span class="sec-num">03</span><div><h2 data-i18n="s3h">Deliverables</h2><p data-i18n="s3p">Specs now save revision rounds later.</p></div></div>
+            <div class="field"><label data-i18n="fQty">Quantity <span class="hint" data-i18n="fQtyHint">— e.g. 5 images, 1× 15s reel</span></label><input type="text" data-k="quantity" /></div>
+            <div class="field"><label data-i18n="fRatio">Aspect ratios</label><div class="chips" id="ratioChips"></div></div>
+            <div class="field"><label data-i18n="fPlat">Platforms</label><div class="chips" id="platChips"></div></div>
+          </div>
+
+          <div class="sec reveal">
+            <div class="sec-head2"><span class="sec-num">04</span><div><h2 data-i18n="s4h">References & brand</h2><p data-i18n="s4p">Show us what good looks like to you.</p></div></div>
+            <div class="field"><label data-i18n="fRefs">References <span class="hint" data-i18n="fRefsHint">— links to looks, films, posts you love</span></label><textarea data-k="references"></textarea></div>
+            <div class="field"><label data-i18n="fGuide">Do you have a brand guide?</label><div class="seg" data-seg="brandGuide"><button data-v="Yes" data-i18n="yes">Yes</button><button data-v="No" class="on" data-i18n="no">No</button></div></div>
+            <div class="field"><label data-i18n="fAssets">Brand assets <span class="hint" data-i18n="fAssetsHint">— logo, colors, fonts (links)</span></label><textarea data-k="assets"></textarea></div>
+          </div>
+
+          <div class="sec reveal">
+            <div class="sec-head2"><span class="sec-num">05</span><div><h2 data-i18n="s5h">Timeline</h2><p data-i18n="s5p">Tighter dates move into express production.</p></div></div>
+            <div class="row">
+              <div class="field"><label data-i18n="fDate">Desired delivery date</label><input type="date" data-k="date" id="dateField" /></div>
+              <div class="field"><label data-i18n="fDeadline">Deadline type</label><div class="seg" data-seg="deadline"><button data-v="Hard" data-i18n="hard">Hard deadline</button><button data-v="Flexible" class="on" data-i18n="flexible">Flexible</button></div></div>
+            </div>
+            <div class="field" style="margin:0"><label data-i18n="fPace">Production pace <span class="pace-tag" id="paceTag" data-pace="Standard" data-i18n="paceStandard">Standard</span></label></div>
+          </div>
+
+          <div class="sec reveal">
+            <div class="sec-head2"><span class="sec-num">06</span><div><h2 data-i18n="s6h">Budget</h2><p data-i18n="s6p">A band is fine — it lets us scope properly.</p></div></div>
+            <div class="field" style="margin-block-end:0"><div class="chips" id="budgetChips"></div></div>
+            <div class="field"><label data-i18n="fRev">Revision rounds expected</label><div class="chips" id="revChips"></div></div>
+            <div id="rushNotice"></div>
+          </div>
+
+          <div class="submit-row reveal">
+            <button class="cta" id="submitBtn" data-i18n="submit">Send request</button>
+            <span class="small" id="submitNote" data-i18n="submitNote">You'll get a request ID to track status.</span>
+          </div>
+        </div>
+
+        <aside class="aside reveal">
+          <div class="brief">
+            <h3 data-i18n="briefTitle">Live brief</h3>
+            <div class="bsub" data-i18n="briefSub">Compiling</div>
+            <dl id="briefList"></dl>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Synth Couture Studio — Jeddah</span>
+  <span data-i18n="footNote">Built to move briefs into production faster.</span>
+</footer>
+
+<div class="overlay" id="overlay"><div class="modal-wrap" id="modalWrap"></div></div>
+<div class="lightbox" id="lightbox"><button class="lb-close" id="lbClose">×</button><div class="lb-nav"><button id="lbPrev">‹</button><button id="lbNext">›</button></div><img id="lbImg" src="" alt="" /></div>
+
+<script>
+/* ============================================================================
+   CONFIG + WORKS — edit here.
+   - To add a work piece: add an item to WORKS (or push into an existing
+     category's `items`). kind:"video" | "identity" | "empty".
+   - Service chips in the form are generated from WORKS automatically.
+   - Recolor: change --amber / --amber-strong in :root.
+   - Media paths are relative to ./assets — keep the folder together when hosting.
+   ========================================================================== */
+const CONFIG = {
+  currency:"SAR",
+  adminPassword:"synth",              // change me. client-side only, not real security.
+  ratios:["9:16","4:5","1:1","16:9"],
+  platforms:["TikTok","Instagram","Snapchat","YouTube","Web","Print"],
+  revisions:["1 round","2 rounds","3 rounds","Open"],
+  budgets:[
+    {id:"b1",label:"Under 5,000",min:0},
+    {id:"b2",label:"5,000 – 15,000",min:5000},
+    {id:"b3",label:"15,000 – 40,000",min:15000},
+    {id:"b4",label:"40,000+",min:40000},
+  ],
+  rush:{expressDays:3,expressFloor:15000,rushDays:7,rushFloor:5000},
+  statuses:["Submitted","In production","Review","Delivered"],
+};
+
+const WORKS = [
+  { slug:"brand-film", kind:"video",
+    title:{en:"Brand film",ar:"فيلم العلامة"},
+    tag:{en:"Cinematic storytelling for premium brands",ar:"سرد سينمائي للعلامات الراقية"},
+    poster:"assets/posters/brand-film.jpg",
+    client:{en:"Awtar International — real estate",ar:"أوتار العالمية — العقارات"},
+    desc:{en:"A warm, golden-hour brand film — quiet luxury and cinematic restraint, where a single human moment carries the whole story.",
+          ar:"فيلم علامة بإضاءة ذهبية دافئة — فخامة هادئة وانضباط سينمائي، حيث تحمل لحظة إنسانية واحدة القصة بأكملها."},
+    items:[{type:"video",src:"assets/brand-film.mp4",poster:"assets/posters/brand-film.jpg"}] },
+
+  { slug:"ai-ugc", kind:"video",
+    title:{en:"AI UGC",ar:"محتوى UGC بالذكاء الاصطناعي"},
+    tag:{en:"Synthetic creators that read as real iPhone UGC",ar:"صنّاع محتوى اصطناعيون يبدون كأنهم UGC حقيقي بالآيفون"},
+    poster:"assets/posters/ai-ugc-noura.jpg",
+    client:{en:"Operamak — cosmetics · presenter: Noura",ar:"أوبرامك — مستحضرات تجميل · المقدِّمة: نورة"},
+    desc:{en:"One locked synthetic presenter, Noura, delivering native Saudi beauty UGC — reviews and demos that feel self-shot, not produced.",
+          ar:"مقدِّمة اصطناعية ثابتة، نورة، تقدّم محتوى تجميل سعودي أصيل — مراجعات وعروض تبدو ذاتية التصوير لا منتَجة."},
+    items:[{type:"video",src:"assets/ai-ugc-noura.mp4",poster:"assets/posters/ai-ugc-noura.jpg"}] },
+
+  { slug:"identity", kind:"identity",
+    title:{en:"Identity",ar:"الهوية البصرية"},
+    tag:{en:"Brand systems rooted in place",ar:"أنظمة علامة متجذّرة في المكان"},
+    poster:"assets/identity/cover.jpg",
+    client:{en:"Saudi PMO community",ar:"مجتمع مكاتب إدارة المشاريع السعودية"},
+    desc:{en:"A complete bilingual brand guideline — heritage-green palette, Saudi architectural motifs, full logo system, and applications across print, digital and events.",
+          ar:"دليل هوية ثنائي اللغة متكامل — لوحة الأخضر التراثي، ونقوش العمارة السعودية، ونظام شعار كامل، وتطبيقاته عبر المطبوعات والرقمي والفعاليات."},
+    pdf:"assets/identity-saudi-pmo.pdf",
+    items:[
+      {type:"image",src:"assets/identity/cover.jpg"},
+      {type:"image",src:"assets/identity/p09.jpg"},
+      {type:"image",src:"assets/identity/p13.jpg"},
+      {type:"image",src:"assets/identity/p15.jpg"},
+      {type:"image",src:"assets/identity/p21.jpg"},
+      {type:"image",src:"assets/identity/p23.jpg"},
+    ] },
+
+  { slug:"social", kind:"empty", accent:"social",
+    title:{en:"Social content",ar:"محتوى التواصل"},
+    tag:{en:"Reels, carousels, campaign content",ar:"ريلز، كاروسيل، محتوى الحملات"} },
+
+  { slug:"editorial", kind:"empty", accent:"editorial",
+    title:{en:"Editorial & photography",ar:"تصوير وإخراج"},
+    tag:{en:"Stills, lookbooks, campaign imagery",ar:"صور ثابتة، لوك بوك، صور الحملات"} },
+
+  { slug:"editing", kind:"empty", accent:"color",
+    title:{en:"Editing",ar:"مونتاج"},
+    tag:{en:"Edits, cuts, motion & assembly",ar:"مونتاج، قص، موشن، تجميع"} },
+];
+const workBySlug = s => WORKS.find(w=>w.slug===s);
+
+/* ---------------- STORAGE (swap for a backend) ---------------- */
+const STORE_KEY="scs_requests_v1";
+const STORAGE={
+  all(){try{return JSON.parse(localStorage.getItem(STORE_KEY)||"[]")}catch(e){return[]}},
+  save(r){const a=this.all();a.unshift(r);localStorage.setItem(STORE_KEY,JSON.stringify(a))},
+  update(id,p){const a=this.all().map(r=>r.id===id?{...r,...p}:r);localStorage.setItem(STORE_KEY,JSON.stringify(a))},
+  remove(id){localStorage.setItem(STORE_KEY,JSON.stringify(this.all().filter(r=>r.id!==id)))},
+  find(id){return this.all().find(r=>r.id===id)},
+};
+
+/* ---------------- i18n ---------------- */
+const I18N={
+  en:{
+    studioSub:"Studio",studioAccess:"Studio access",navWork:"Work",navRequest:"Start a project",
+    eyebrow:"Synth Couture Studio",heroTitle:"Brands, told <em>cinematically</em>.",
+    heroLede:"A creative studio for brand films, AI-driven UGC, and identity systems — built with cinematic restraint and a Saudi sensibility. Browse the work, then start your project.",
+    ctaRequest:"Start a project",ctaWork:"Browse work",
+    workH:"Selected work",workP:"Tap a discipline to see the work.",
+    lookH:"Track a request",lookP:"Enter your request ID to see where it is in production.",lookBtn:"Track",
+    backHome:"Back",backWork:"All work",
+    clientLabel:"Client",viewPdf:"View full guidelines (PDF)",reqThis:"Request this",
+    soon:"On request",catEmptyH:"New work lands here soon",catEmptyP:"This discipline is live for client projects — the showcase is being curated. Start a brief and we'll take it from there.",
+    reqH:"Start a project",reqLede:"Tell us what you want made and when you need it. The clearer the brief, the faster it moves into production.",
+    s1h:"Who's asking",s1p:"So we know how to reach you.",fName:"Your name",fBrand:"Brand / company",fEmail:"Email",fWa:"WhatsApp",
+    s2h:"What you need made",s2p:"Pick all that apply.",fBrief:"The brief ",fBriefHint:"— what's the idea, the goal, the feeling?",
+    s3h:"Deliverables",s3p:"Specs now save revision rounds later.",fQty:"Quantity ",fQtyHint:"— e.g. 5 images, 1× 15s reel",fRatio:"Aspect ratios",fPlat:"Platforms",
+    s4h:"References & brand",s4p:"Show us what good looks like to you.",fRefs:"References ",fRefsHint:"— links to looks, films, posts you love",
+    fGuide:"Do you have a brand guide?",yes:"Yes",no:"No",fAssets:"Brand assets ",fAssetsHint:"— logo, colors, fonts (links)",
+    s5h:"Timeline",s5p:"Tighter dates move into express production.",fDate:"Desired delivery date",fDeadline:"Deadline type",hard:"Hard deadline",flexible:"Flexible",
+    fPace:"Production pace ",paceStandard:"Standard",paceRush:"Rush",paceExpress:"Express",
+    s6h:"Budget",s6p:"A band is fine — it lets us scope properly.",fRev:"Revision rounds expected",
+    submit:"Send request",submitNote:"You'll get a request ID to track status.",
+    briefTitle:"Live brief",briefSub:"Compiling",footNote:"Built to move briefs into production faster.",empty:"—",
+    rushOkFlexible:"This date lands in {pace} pace. Your deadline is flexible, so we'll confirm pricing — {pace} work usually carries a surcharge.",
+    rushBlock:"{pace} delivery starts at {floor} {cur}. Raise the budget, or move the date later, to unlock a hard {pace} deadline.",
+    rushClear:"This timeline and budget work together. Ready to send.",
+    needService:"Pick at least one service before sending.",needName:"Add your name and email so we can reach you.",needDate:"Choose a desired delivery date.",
+    phases:["reading the brief","checking the timeline","scoping the work","logging your request"],
+    confirmTitle:"Request received",confirmLine1:"We've logged your brief.",confirmLine2:"Save this ID — use it to track status anytime.",copyId:"Copy ID",copied:"Copied",
+    adminTitle:"Studio access",adminP:"Enter the studio password.",adminEnter:"Enter",adminWrong:"Wrong password.",
+    inbox:"Requests",total:"Total",active:"In production",delivered:"Delivered",noReqs:"No requests yet. They'll appear here the moment a client sends one.",
+    advance:"Advance status",reopen:"Move back",del:"Delete",confirmDel:"Delete this request permanently?",
+    trackFound:"{id} — currently in \u201C{status}\u201D.",trackNone:"No request found with that ID. Check the format: SCS-000000-0000.",
+    sName:"Name",sBrand:"Brand",sServices:"Services",sBrief:"Brief",sQuantity:"Quantity",sRatios:"Ratios",sPlatforms:"Platforms",sBrandGuide:"Brand guide",sDeadline:"Deadline",sBudget:"Budget",sRevisions:"Revisions",sDate:"Delivery",sPace:"Pace",
+  },
+  ar:{
+    studioSub:"استوديو",studioAccess:"دخول الاستوديو",navWork:"الأعمال",navRequest:"ابدأ مشروعًا",
+    eyebrow:"استوديو سينث كوتور",heroTitle:"علامات تُروى <em>سينمائيًا</em>.",
+    heroLede:"استوديو إبداعي لأفلام العلامات، ومحتوى UGC بالذكاء الاصطناعي، وأنظمة الهوية — بانضباط سينمائي وحسّ سعودي. تصفّح الأعمال، ثم ابدأ مشروعك.",
+    ctaRequest:"ابدأ مشروعًا",ctaWork:"تصفّح الأعمال",
+    workH:"أعمال مختارة",workP:"اضغط على أي تخصص لرؤية أعماله.",
+    lookH:"تتبّع طلبًا",lookP:"أدخل رقم طلبك لمعرفة مرحلته في الإنتاج.",lookBtn:"تتبّع",
+    backHome:"رجوع",backWork:"كل الأعمال",
+    clientLabel:"العميل",viewPdf:"عرض الدليل كاملًا (PDF)",reqThis:"اطلب هذا",
+    soon:"عند الطلب",catEmptyH:"أعمال جديدة قريبًا هنا",catEmptyP:"هذا التخصص متاح لمشاريع العملاء — ويجري تجهيز معرض الأعمال. ابدأ موجزًا ونكمل من هناك.",
+    reqH:"ابدأ مشروعًا",reqLede:"أخبرنا بما تريد إنتاجه ومتى تحتاجه. كلما كان الموجز أوضح، انتقل أسرع إلى الإنتاج.",
+    s1h:"من يطلب",s1p:"لنعرف كيف نتواصل معك.",fName:"اسمك",fBrand:"العلامة / الشركة",fEmail:"البريد الإلكتروني",fWa:"واتساب",
+    s2h:"ما الذي تريد إنتاجه",s2p:"اختر كل ما ينطبق.",fBrief:"الموجز ",fBriefHint:"— ما الفكرة والهدف والإحساس؟",
+    s3h:"المخرجات",s3p:"تحديد المواصفات الآن يوفّر جولات تعديل لاحقًا.",fQty:"الكمية ",fQtyHint:"— مثال: ٥ صور، مقطع ١٥ ثانية",fRatio:"الأبعاد",fPlat:"المنصّات",
+    s4h:"المراجع والهوية",s4p:"أرِنا كيف يبدو الجيّد بالنسبة لك.",fRefs:"المراجع ",fRefsHint:"— روابط لأعمال وأفلام ومنشورات تحبها",
+    fGuide:"هل لديك دليل هوية؟",yes:"نعم",no:"لا",fAssets:"أصول الهوية ",fAssetsHint:"— الشعار، الألوان، الخطوط (روابط)",
+    s5h:"الجدول الزمني",s5p:"المواعيد الأقرب تنتقل إلى إنتاج عاجل.",fDate:"تاريخ التسليم المطلوب",fDeadline:"نوع الموعد",hard:"موعد ثابت",flexible:"مرن",
+    fPace:"وتيرة الإنتاج ",paceStandard:"عادية",paceRush:"سريعة",paceExpress:"عاجلة",
+    s6h:"الميزانية",s6p:"النطاق يكفي — يساعدنا على تحديد العمل.",fRev:"جولات التعديل المتوقعة",
+    submit:"إرسال الطلب",submitNote:"ستحصل على رقم طلب لمتابعة الحالة.",
+    briefTitle:"الموجز الحيّ",briefSub:"قيد التجميع",footNote:"مصمَّم لنقل الموجزات إلى الإنتاج أسرع.",empty:"—",
+    rushOkFlexible:"هذا التاريخ يقع ضمن الوتيرة {pace}. موعدك مرن، لذا سنؤكّد التسعير — العمل {pace} عادةً يحمل رسومًا إضافية.",
+    rushBlock:"التسليم {pace} يبدأ من {floor} {cur}. ارفع الميزانية أو أخّر التاريخ لإتاحة موعد {pace} ثابت.",
+    rushClear:"الجدول والميزانية متوافقان. جاهز للإرسال.",
+    needService:"اختر خدمة واحدة على الأقل قبل الإرسال.",needName:"أضف اسمك وبريدك لنتمكن من التواصل معك.",needDate:"اختر تاريخ التسليم المطلوب.",
+    phases:["نقرأ الموجز","نتحقق من الجدول","نحدّد نطاق العمل","نسجّل طلبك"],
+    confirmTitle:"تم استلام الطلب",confirmLine1:"سجّلنا موجزك.",confirmLine2:"احفظ هذا الرقم — استخدمه لمتابعة الحالة في أي وقت.",copyId:"نسخ الرقم",copied:"تم النسخ",
+    adminTitle:"دخول الاستوديو",adminP:"أدخل كلمة مرور الاستوديو.",adminEnter:"دخول",adminWrong:"كلمة المرور خاطئة.",
+    inbox:"الطلبات",total:"الإجمالي",active:"قيد الإنتاج",delivered:"تم التسليم",noReqs:"لا توجد طلبات بعد. ستظهر هنا فور إرسال العميل لطلب.",
+    advance:"تقديم الحالة",reopen:"إرجاع",del:"حذف",confirmDel:"حذف هذا الطلب نهائيًا؟",
+    trackFound:"{id} — حاليًا في «{status}».",trackNone:"لا يوجد طلب بهذا الرقم. تحقق من الصيغة: SCS-000000-0000.",
+    sName:"الاسم",sBrand:"العلامة",sServices:"الخدمات",sBrief:"الموجز",sQuantity:"الكمية",sRatios:"الأبعاد",sPlatforms:"المنصّات",sBrandGuide:"دليل الهوية",sDeadline:"الموعد",sBudget:"الميزانية",sRevisions:"التعديلات",sDate:"التسليم",sPace:"الوتيرة",
+  }
+};
+const PACE_LABEL={en:{Standard:"Standard",Rush:"Rush",Express:"Express"},ar:{Standard:"عادية",Rush:"سريعة",Express:"عاجلة"}};
+const STATUS_LABEL={en:["Submitted","In production","Review","Delivered"],ar:["تم الإرسال","قيد الإنتاج","المراجعة","تم التسليم"]};
+let lang="en";
+const t=k=>(I18N[lang][k]??k);
+const wt=(w,f)=>w[f]?(w[f][lang]||w[f].en):"";
+const serviceLabel=slug=>{const w=workBySlug(slug);return w?wt(w,"title"):slug;};
+
+/* ---------------- state ---------------- */
+const state={name:"",brand:"",email:"",whatsapp:"",services:[],brief:"",quantity:"",ratios:[],platforms:[],references:"",brandGuide:"No",assets:"",date:"",deadline:"Flexible",budget:"",revisions:""};
+
+/* ---------------- chips ---------------- */
+function buildServiceChips(){
+  const el=document.getElementById("serviceChips");el.innerHTML="";
+  WORKS.forEach(w=>{
+    const b=document.createElement("button");b.type="button";b.className="chip";b.dataset.slug=w.slug;
+    b.textContent=wt(w,"title");
+    b.addEventListener("click",()=>{
+      b.classList.toggle("on");
+      state.services=Array.from(el.querySelectorAll(".chip.on")).map(c=>c.dataset.slug);
+      refresh();
+    });
+    el.appendChild(b);
+  });
+}
+function chipGroup(elId,items,mode,key){
+  const el=document.getElementById(elId);el.innerHTML="";
+  items.forEach(it=>{
+    const label=typeof it==="object"?it.label:it;
+    const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=label;b.dataset.val=label;
+    b.addEventListener("click",()=>{
+      if(mode==="multi"){b.classList.toggle("on");state[key]=Array.from(el.querySelectorAll(".chip.on")).map(c=>c.dataset.val);}
+      else{el.querySelectorAll(".chip").forEach(c=>c.classList.remove("on"));b.classList.add("on");state[key]=label;}
+      refresh();
+    });
+    el.appendChild(b);
+  });
+}
+function buildChips(){
+  buildServiceChips();
+  chipGroup("ratioChips",CONFIG.ratios,"multi","ratios");
+  chipGroup("platChips",CONFIG.platforms,"multi","platforms");
+  chipGroup("budgetChips",CONFIG.budgets,"single","budget");
+  chipGroup("revChips",CONFIG.revisions,"single","revisions");
+}
+function wireInputs(){
+  document.querySelectorAll("[data-k]").forEach(inp=>inp.addEventListener("input",()=>{state[inp.dataset.k]=inp.value;refresh();}));
+  document.querySelectorAll("[data-seg]").forEach(seg=>seg.querySelectorAll("button").forEach(btn=>btn.addEventListener("click",()=>{
+    seg.querySelectorAll("button").forEach(b=>b.classList.remove("on"));btn.classList.add("on");state[seg.dataset.seg]=btn.dataset.v;refresh();
+  })));
+}
+
+/* ---------------- rush logic ---------------- */
+function computePace(){
+  if(!state.date)return{pace:"Standard",days:null};
+  const today=new Date();today.setHours(0,0,0,0);const d=new Date(state.date);d.setHours(0,0,0,0);
+  const days=Math.round((d-today)/86400000);
+  let pace="Standard";if(days<=CONFIG.rush.expressDays)pace="Express";else if(days<=CONFIG.rush.rushDays)pace="Rush";
+  return{pace,days};
+}
+function budgetFloor(){const b=CONFIG.budgets.find(x=>x.label===state.budget);return b?b.min:null;}
+function rushCheck(){
+  const{pace}=computePace();
+  const floor=pace==="Express"?CONFIG.rush.expressFloor:pace==="Rush"?CONFIG.rush.rushFloor:0;
+  const fmtFloor=floor.toLocaleString("en-US");const paceWord=PACE_LABEL[lang][pace];
+  if(pace==="Standard")return{ok:true,level:"ok",msg:t("rushClear")};
+  if(!state.budget)return{ok:true,level:"warn",msg:t("rushOkFlexible").replace(/{pace}/g,paceWord)};
+  const bf=budgetFloor();const meets=bf!=null&&bf>=floor;
+  if(meets)return{ok:true,level:"ok",msg:t("rushClear")};
+  if(state.deadline==="Hard")return{ok:false,level:"stop",msg:t("rushBlock").replace(/{pace}/g,paceWord).replace("{floor}",fmtFloor).replace("{cur}",CONFIG.currency)};
+  return{ok:true,level:"warn",msg:t("rushOkFlexible").replace(/{pace}/g,paceWord)};
+}
+function renderPaceTag(){const{pace}=computePace();const tag=document.getElementById("paceTag");tag.dataset.pace=pace;tag.textContent=PACE_LABEL[lang][pace];}
+function renderRushNotice(){const box=document.getElementById("rushNotice");const r=rushCheck();box.innerHTML='<div class="notice is-'+r.level+'"><span class="dot"></span><span>'+r.msg+'</span></div>';return r;}
+
+/* ---------------- live brief ---------------- */
+function val(v){return(v&&(Array.isArray(v)?v.length:String(v).trim()))?(Array.isArray(v)?v.join(", "):v):null;}
+function refresh(){
+  if(!document.getElementById("page-request").classList.contains("active"))return;
+  renderPaceTag();const r=renderRushNotice();const{pace}=computePace();
+  const services=state.services.map(serviceLabel);
+  const rows=[
+    ["sName",val(state.name)],["sBrand",val(state.brand)],["sServices",val(services)],
+    ["sBrief",val(state.brief)],["sQuantity",val(state.quantity)],["sRatios",val(state.ratios)],
+    ["sPlatforms",val(state.platforms)],["sBrandGuide",state.brandGuide==="Yes"?t("yes"):(state.brandGuide?t("no"):null)],
+    ["sDate",val(state.date)],["sPace",state.date?PACE_LABEL[lang][pace]:null],
+    ["sDeadline",state.deadline?(state.deadline==="Hard"?t("hard"):t("flexible")):null],
+    ["sBudget",val(state.budget)],["sRevisions",val(state.revisions)],
+  ];
+  document.getElementById("briefList").innerHTML=rows.map(([k,v])=>'<div class="b-row"><dt>'+t(k)+'</dt><dd class="'+(v?"":"empty")+'">'+(v?escapeHtml(v):t("empty"))+'</dd></div>').join("");
+  document.getElementById("submitBtn").disabled=!r.ok;
+}
+function escapeHtml(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+/* ---------------- submit ---------------- */
+function genId(){const d=new Date();const p=n=>String(n).padStart(2,"0");return"SCS-"+String(d.getFullYear()).slice(2)+p(d.getMonth()+1)+p(d.getDate())+"-"+Math.random().toString(36).slice(2,6).toUpperCase();}
+function validateBeforeSend(){
+  if(!state.name.trim()||!state.email.trim())return t("needName");
+  if(state.services.length===0)return t("needService");
+  if(!state.date)return t("needDate");
+  const r=rushCheck();if(!r.ok)return r.msg;return null;
+}
+function doSubmit(){
+  const err=validateBeforeSend();if(err){flash(err);return;}
+  runLoader(()=>{const{pace}=computePace();const rec={id:genId(),ts:Date.now(),status:0,...state,services:[...state.services],pace};STORAGE.save(rec);showConfirm(rec);});
+}
+function flash(msg){const n=document.getElementById("submitNote");n.textContent=msg;n.style.color="var(--stop)";setTimeout(()=>{n.textContent=t("submitNote");n.style.color="";},4200);}
+
+/* ---------------- overlay ---------------- */
+const overlay=document.getElementById("overlay"),modalWrap=document.getElementById("modalWrap");
+function openOverlay(html){modalWrap.innerHTML=html;overlay.classList.add("show");}
+function closeOverlay(){overlay.classList.remove("show");modalWrap.innerHTML="";}
+overlay.addEventListener("click",e=>{if(e.target===overlay)closeOverlay();});
+window.closeOverlay=closeOverlay;
+
+function runLoader(done){
+  const phases=I18N[lang].phases;
+  openOverlay('<div class="modal"><div class="flux"><div class="phase" id="fxPhase">'+phases[0]+'</div><div class="track"><div class="fill" id="fxFill"></div></div></div></div>');
+  const fill=document.getElementById("fxFill"),ph=document.getElementById("fxPhase");let p=0;
+  const tick=setInterval(()=>{
+    p=Math.min(100,p+(4+Math.random()*5));fill.style.width=p+"%";
+    const idx=Math.min(phases.length-1,Math.floor(p/(100/phases.length)));
+    if(ph.textContent!==phases[idx]){ph.style.opacity=0;ph.style.transform="translateY(8px)";setTimeout(()=>{ph.textContent=phases[idx];ph.style.opacity=1;ph.style.transform="none";},180);}
+    if(p>=100){clearInterval(tick);setTimeout(done,520);}
+  },150);
+}
+function showConfirm(rec){
+  openOverlay('<div class="modal"><div class="modal-wrap"><button class="x" onclick="closeOverlay()">×</button><div class="confirm"><div class="seal">✓</div><h2 style="margin:0">'+t("confirmTitle")+'</h2><p>'+t("confirmLine1")+'</p><div class="id" dir="ltr">'+rec.id+'</div><p>'+t("confirmLine2")+'</p><button class="copy-id" id="copyId">'+t("copyId")+'</button></div></div></div>');
+  document.getElementById("copyId").addEventListener("click",function(){if(navigator.clipboard)navigator.clipboard.writeText(rec.id);this.textContent=t("copied");});
+}
+
+/* ---------------- status lookup ---------------- */
+function doLookup(){
+  const id=document.getElementById("lookupId").value.trim().toUpperCase();
+  const box=document.getElementById("trackBox"),steps=document.getElementById("trackSteps"),msg=document.getElementById("trackMsg");
+  const rec=STORAGE.find(id);box.classList.add("show");
+  if(!rec){steps.innerHTML="";msg.className="notice is-stop";msg.textContent=t("trackNone");return;}
+  steps.innerHTML=STATUS_LABEL[lang].map((s,i)=>{const cls=i<rec.status?"done":i===rec.status?"now":"";return'<div class="step '+cls+'"><div class="ball"></div><span>'+s+'</span></div>';}).join("");
+  msg.className="notice is-ok";msg.textContent=t("trackFound").replace("{id}",rec.id).replace("{status}",STATUS_LABEL[lang][rec.status]);
+}
+
+/* ---------------- admin ---------------- */
+function openAdminGate(){
+  openOverlay('<div class="modal"><div class="modal-wrap"><button class="x" onclick="closeOverlay()">×</button><h2>'+t("adminTitle")+'</h2><p style="font-size:13px;color:var(--ink-3);margin-block-end:18px;font-weight:300">'+t("adminP")+'</p><input type="password" id="adminPass" style="margin-block-end:12px"/><button class="cta" id="adminEnter" style="width:100%">'+t("adminEnter")+'</button><div id="adminErr" style="color:var(--stop);font-size:12.5px;margin-block-start:10px;min-height:1em"></div></div></div>');
+  const go=()=>{if(document.getElementById("adminPass").value===CONFIG.adminPassword)renderAdmin();else document.getElementById("adminErr").textContent=t("adminWrong");};
+  document.getElementById("adminEnter").addEventListener("click",go);
+  document.getElementById("adminPass").addEventListener("keydown",e=>{if(e.key==="Enter")go();});
+}
+function renderAdmin(){
+  const reqs=STORAGE.all();const total=reqs.length;const active=reqs.filter(r=>r.status>0&&r.status<3).length;const delivered=reqs.filter(r=>r.status===3).length;
+  const list=total===0?'<div class="empty-state">'+t("noReqs")+'</div>':reqs.map(reqCard).join("");
+  openOverlay('<div class="modal wide"><div class="modal-wrap"><button class="x" onclick="closeOverlay()">×</button><div class="admin-head"><h2>'+t("inbox")+'</h2><div class="admin-stats"><div><b>'+total+'</b>'+t("total")+'</div><div><b>'+active+'</b>'+t("active")+'</div><div><b>'+delivered+'</b>'+t("delivered")+'</div></div></div><div class="req-list">'+list+'</div></div></div>');
+}
+function reqCard(r){
+  const when=new Date(r.ts).toLocaleDateString(lang==="ar"?"ar":"en-GB",{day:"numeric",month:"short",year:"numeric"});
+  const services=(r.services||[]).map(serviceLabel);
+  const kv=(k,v)=>v&&(Array.isArray(v)?v.length:String(v).trim())?'<div class="kv"><b>'+t(k)+'</b><span dir="auto">'+escapeHtml(Array.isArray(v)?v.join(", "):v)+'</span></div>':"";
+  const paceLbl=r.pace?PACE_LABEL[lang][r.pace]:"";
+  return '<div class="req" data-id="'+r.id+'"><div class="req-top"><div><div class="req-id" dir="ltr">'+r.id+'</div><div class="req-meta">'+escapeHtml(r.brand||r.name||"")+' · '+when+'</div></div><span class="badge" data-s="'+r.status+'">'+STATUS_LABEL[lang][r.status]+'</span></div><div class="req-body">'+
+    kv("sName",r.name)+kv("sBrand",r.brand)+
+    '<div class="kv"><b>Email</b><span dir="ltr">'+escapeHtml(r.email||"")+' '+(r.whatsapp?("· "+escapeHtml(r.whatsapp)):"")+'</span></div>'+
+    kv("sServices",services)+kv("sBrief",r.brief)+kv("sQuantity",r.quantity)+kv("sRatios",r.ratios)+kv("sPlatforms",r.platforms)+
+    (r.references?'<div class="kv"><b>Refs</b><span dir="auto">'+escapeHtml(r.references)+'</span></div>':"")+
+    kv("sBrandGuide",r.brandGuide==="Yes"?t("yes"):t("no"))+
+    (r.assets?'<div class="kv"><b>Assets</b><span dir="auto">'+escapeHtml(r.assets)+'</span></div>':"")+
+    kv("sDate",r.date)+'<div class="kv"><b>'+t("sPace")+'</b><span>'+paceLbl+' · '+(r.deadline==="Hard"?t("hard"):t("flexible"))+'</span></div>'+
+    kv("sBudget",r.budget)+kv("sRevisions",r.revisions)+
+    '<div class="req-actions">'+
+    (r.status<3?'<button class="mini" onclick="advance(\''+r.id+'\',1)">'+t("advance")+' →</button>':"")+
+    (r.status>0?'<button class="mini" onclick="advance(\''+r.id+'\',-1)">← '+t("reopen")+'</button>':"")+
+    '<button class="mini danger" onclick="removeReq(\''+r.id+'\')">'+t("del")+'</button></div></div></div>';
+}
+function advance(id,dir){const r=STORAGE.find(id);if(!r)return;STORAGE.update(id,{status:Math.max(0,Math.min(3,r.status+dir))});renderAdmin();}
+function removeReq(id){if(confirm(t("confirmDel"))){STORAGE.remove(id);renderAdmin();}}
+window.advance=advance;window.removeReq=removeReq;
+document.addEventListener("click",e=>{const top=e.target.closest(".req-top");if(top)top.closest(".req").classList.toggle("open");});
+
+/* ---------------- lightbox ---------------- */
+let lbItems=[],lbIndex=0;
+const lightbox=document.getElementById("lightbox"),lbImg=document.getElementById("lbImg");
+function openLightbox(items,i){lbItems=items;lbIndex=i;lbImg.src=items[i];lightbox.classList.add("show");}
+function lbStep(d){if(!lbItems.length)return;lbIndex=(lbIndex+d+lbItems.length)%lbItems.length;lbImg.src=lbItems[lbIndex];}
+document.getElementById("lbClose").addEventListener("click",()=>lightbox.classList.remove("show"));
+document.getElementById("lbPrev").addEventListener("click",()=>lbStep(-1));
+document.getElementById("lbNext").addEventListener("click",()=>lbStep(1));
+lightbox.addEventListener("click",e=>{if(e.target===lightbox)lightbox.classList.remove("show");});
+document.addEventListener("keydown",e=>{if(!lightbox.classList.contains("show"))return;if(e.key==="Escape")lightbox.classList.remove("show");if(e.key==="ArrowRight")lbStep(1);if(e.key==="ArrowLeft")lbStep(-1);});
+
+/* ---------------- work fan carousel (home) ---------------- */
+/* Vanilla port of the card-fan layout: slot config, responsive multipliers,
+   and hover physics (hovered card lifts, neighbors push apart). */
+let fanCleanup=null,fanHovered=null;
+function respMult(w){if(w<480)return .28;if(w<640)return .38;if(w<768)return .5;if(w<1024)return .75;return 1;}
+function heightMult(w){let ideal;if(w<480)ideal=22*16;else if(w<640)ideal=26*16;else if(w<768)ideal=28*16;else if(w<1024)ideal=34*16;else ideal=38*16;const avail=window.innerHeight*0.7;return avail>=ideal?1:avail/ideal;}
+function slotConfig(n,slot){const center=n>>1;const d=n>1?(slot-center)/center:0;const a=Math.abs(d);return{rot:d*21,scale:1-0.2244*a*a,x:d*30,y:a*a*7.3,zIndex:10-Math.abs(slot-center)};}
+function fanLayout(cards,hovered){
+  const n=cards.length,mult=respMult(window.innerWidth),hM=heightMult(window.innerWidth),center=n>>1;
+  cards.forEach((el,i)=>{
+    const base=slotConfig(n,i);
+    let tx=base.x*mult,ty=base.y*hM,rot=base.rot,sc=base.scale,z=base.zIndex,delay=0;
+    if(hovered!=null){
+      const dist=Math.abs(i-hovered);delay=dist*0.02;
+      if(i===hovered){ty-=2.5*hM;sc*=1.08;z=20;}
+      else{
+        const norm=center>0?(i-center)/center:0;
+        const push=8*(1-Math.abs(norm))*(1+0.2*Math.max(0,3-dist));
+        if(i<hovered){tx-=push*mult;rot-=3/(dist+1);}else{tx+=push*mult;rot+=3/(dist+1);}
+        if(i===n-1&&hovered<center)ty-=1*hM;
+        if(i===0&&hovered>center)ty-=1*hM;
+      }
+    }else{delay=Math.abs(i-center)*0.02;}
+    el.style.transitionDelay=delay+"s";
+    el.style.transform="translate(calc(-50% + "+(tx*16)+"px), calc(-50% + "+(ty*16)+"px)) rotate("+rot+"deg) scale("+sc+")";
+    el.style.zIndex=z;
+  });
+}
+function renderWorkFan(){
+  const host=document.getElementById("workFan");
+  if(fanCleanup){fanCleanup();fanCleanup=null;}
+  host.innerHTML="";
+  const cards=WORKS.map(w=>{
+    const a=document.createElement("a");a.className="fan-card";a.setAttribute("data-nav","#/work/"+w.slug);
+    if(w.kind==="empty")a.setAttribute("data-accent",w.accent);
+    const isVid=w.kind==="video";
+    const kick=w.client?wt(w,"client").split("·")[0].split("—")[0].trim():wt(w,"tag");
+    let inner=w.kind==="empty"
+      ? '<div class="fc-ph"></div><div class="fc-grad"></div><span class="fc-soon">'+t("soon")+'</span>'
+      : '<img class="fc-bg" src="'+w.poster+'" alt="" loading="lazy"/><div class="fc-grad"></div>'+(isVid?'<div class="fc-play">▶</div>':'');
+    inner+='<div class="fc-meta"><div class="fc-kick">'+(isVid?'● ':'')+escapeHtml(kick)+'</div><div class="fc-title">'+wt(w,"title")+'</div></div>';
+    a.innerHTML=inner;host.appendChild(a);return a;
+  });
+  requestAnimationFrame(()=>{cards.forEach(c=>c.style.opacity="1");fanLayout(cards,null);});
+  const enter=cards.map((el,i)=>{const h=()=>{fanHovered=i;fanLayout(cards,i);};el.addEventListener("mouseenter",h);return[el,h];});
+  let leaveT=null;
+  const onLeave=()=>{clearTimeout(leaveT);leaveT=setTimeout(()=>{fanHovered=null;fanLayout(cards,null);},60);};
+  host.addEventListener("mouseleave",onLeave);
+  const onResize=()=>fanLayout(cards,fanHovered);
+  window.addEventListener("resize",onResize);
+  fanCleanup=()=>{enter.forEach(([el,h])=>el.removeEventListener("mouseenter",h));host.removeEventListener("mouseleave",onLeave);window.removeEventListener("resize",onResize);clearTimeout(leaveT);};
+}
+function renderWorkView(slug){
+  const w=workBySlug(slug);const host=document.getElementById("workView");
+  if(!w){location.hash="#/";return;}
+  let body="";
+  if(w.kind==="video"){
+    const it=w.items[0];
+    body='<div class="stage"><div class="phone"><video src="'+it.src+'" poster="'+it.poster+'" controls playsinline preload="metadata"></video></div>'+
+      '<div class="copy"><p>'+wt(w,"desc")+'</p><a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div></div>';
+  } else if(w.kind==="identity"){
+    const imgs=w.items.map(i=>i.src);
+    body='<p style="font-size:14.5px;color:var(--ink-2);font-weight:300;line-height:1.6;max-width:62ch;margin-block-end:24px">'+wt(w,"desc")+'</p>'+
+      '<div class="gallery">'+w.items.map((i,idx)=>'<div class="shot" data-lb="'+idx+'"><img src="'+i.src+'" loading="lazy" alt=""/></div>').join("")+'</div>'+
+      '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-block-start:26px"><a class="cta outline" href="'+w.pdf+'" target="_blank" rel="noopener">'+t("viewPdf")+'</a><a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div>';
+    setTimeout(()=>{host.querySelectorAll("[data-lb]").forEach(el=>el.addEventListener("click",()=>openLightbox(imgs,+el.dataset.lb)));},0);
+  } else {
+    body='<div class="cat-empty"><h3>'+t("catEmptyH")+'</h3><p>'+t("catEmptyP")+'</p><a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div>';
+  }
+  const clientChip=w.client?'<div class="cat-client"><span>'+t("clientLabel")+'</span><b>'+wt(w,"client")+'</b></div>':"";
+  host.innerHTML='<a class="back" data-nav="#/"><span>←</span><span>'+t("backWork")+'</span></a>'+
+    '<div class="cat-head reveal"><div class="eyebrow">'+t("workH")+'</div><h1>'+wt(w,"title")+'</h1><div class="tag">'+wt(w,"tag")+'</div>'+clientChip+'</div>'+
+    '<div class="cat-body reveal">'+body+'</div>';
+  initReveal();
+}
+
+/* ---------------- language ---------------- */
+function applyLang(next){
+  lang=next;const html=document.documentElement;
+  html.lang=lang;html.dir=lang==="ar"?"rtl":"ltr";
+  html.classList.toggle("lang-ar",lang==="ar");html.classList.toggle("lang-en",lang==="en");
+  document.getElementById("langBtn").textContent=lang==="ar"?"English":"العربية";
+  document.querySelectorAll("[data-i18n]").forEach(el=>{const v=I18N[lang][el.getAttribute("data-i18n")];if(v==null)return;if(/[<]/.test(v))el.innerHTML=v;else el.textContent=v;});
+  buildServiceChips();rebuildChipStates();router();
+}
+function rebuildChipStates(){
+  document.querySelectorAll("#serviceChips .chip").forEach(c=>c.classList.toggle("on",state.services.includes(c.dataset.slug)));
+  [["ratioChips","ratios"],["platChips","platforms"]].forEach(([id,key])=>document.querySelectorAll("#"+id+" .chip").forEach(c=>c.classList.toggle("on",state[key].includes(c.dataset.val))));
+  [["budgetChips","budget"],["revChips","revisions"]].forEach(([id,key])=>document.querySelectorAll("#"+id+" .chip").forEach(c=>c.classList.toggle("on",state[key]===c.dataset.val)));
+}
+
+/* ---------------- reveal ---------------- */
+function initReveal(){
+  const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target);}}),{threshold:0.1});
+  document.querySelectorAll(".reveal:not(.in)").forEach(el=>io.observe(el));
+}
+
+/* ---------------- router ---------------- */
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".navlink").forEach(n=>n.classList.remove("on"));
+  window.scrollTo({top:0,behavior:"instant"in window?"instant":"auto"});
+}
+function router(){
+  const h=location.hash||"#/";
+  const[path,query]=h.split("?");
+  if(path.startsWith("#/work/")){
+    showPage("page-work");renderWorkView(path.replace("#/work/",""));
+  } else if(path==="#/request"){
+    showPage("page-request");
+    document.querySelector('.navlink[data-nav="#/request"]').classList.add("on");
+    // preselect service from ?s=slug
+    if(query){const params=new URLSearchParams(query);const s=params.get("s");if(s&&!state.services.includes(s)&&workBySlug(s))state.services.push(s);}
+    rebuildChipStates();refresh();initReveal();
+  } else {
+    showPage("page-home");
+    document.querySelector('.navlink[data-nav="#/"]').classList.add("on");
+    renderWorkFan();initReveal();
+  }
+}
+// intercept internal nav clicks
+document.addEventListener("click",e=>{const el=e.target.closest("[data-nav]");if(el){e.preventDefault();const dest=el.getAttribute("data-nav");if(location.hash===dest)router();else location.hash=dest;}});
+window.addEventListener("hashchange",router);
+
+/* ---------------- init ---------------- */
+buildChips();wireInputs();
+document.getElementById("submitBtn").addEventListener("click",doSubmit);
+document.getElementById("lookupBtn").addEventListener("click",doLookup);
+document.getElementById("lookupId").addEventListener("keydown",e=>{if(e.key==="Enter")doLookup();});
+document.getElementById("langBtn").addEventListener("click",()=>applyLang(lang==="ar"?"en":"ar"));
+document.getElementById("adminBtn").addEventListener("click",openAdminGate);
+document.getElementById("dateField").min=new Date().toISOString().split("T")[0];
+router();
+</script>
+</body>
+</html>
