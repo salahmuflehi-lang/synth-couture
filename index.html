@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js" defer></script>
 <style>
 /* ============================================================================
    SYNTH COUTURE STUDIO
@@ -345,6 +346,27 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber);
 .mini.danger:hover{border-color:var(--stop);color:var(--stop)}
 .empty-state{text-align:center;padding:40px 20px;color:var(--ink-3);font-size:13px}
 
+/* ---- edit mode (drag-to-reorder) ---- */
+body.editing .gallery .shot,body.editing .vid-grid .phone,body.editing .fan-card{cursor:grab;outline:1.5px dashed var(--amber);outline-offset:4px;transition:outline-offset .2s var(--ease)}
+body.editing .gallery .shot:active,body.editing .vid-grid .phone:active,body.editing .fan-card:active{cursor:grabbing}
+body.editing .fan-card{transition:none!important}
+body.editing .fan{height:auto;display:flex;flex-wrap:wrap;justify-content:center;gap:14px;padding:20px 0}
+body.editing .fan-card{position:relative!important;transform:none!important;left:auto!important;top:auto!important;opacity:1!important;width:clamp(140px,18vw,180px);z-index:auto!important}
+.sortable-ghost{opacity:.3}
+.sortable-chosen{box-shadow:0 0 0 2px var(--amber),0 30px 60px rgba(0,0,0,.6)!important}
+.edit-bar{position:fixed;inset-block-end:24px;inset-inline:0;z-index:90;display:none;justify-content:center;gap:10px;flex-wrap:wrap;padding-inline:16px;pointer-events:none}
+body.editing .edit-bar{display:flex}
+.edit-bar > *{pointer-events:auto}
+.edit-pill{background:rgba(28,24,20,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid var(--amber);color:var(--amber);padding:10px 18px;border-radius:100px;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;
+  box-shadow:0 12px 32px rgba(0,0,0,.5),0 0 24px var(--amber-glow)}
+.edit-pill button{background:none;border:none;color:inherit;font:inherit;cursor:pointer;letter-spacing:.04em}
+.edit-pill button:hover{color:var(--ink)}
+.edit-pill .sep{opacity:.4;margin-inline:6px}
+#editToggle{display:none}
+body.is-admin #editToggle{display:inline-block}
+body.is-admin #editToggle.on{background:var(--amber);color:#2a1808;border-color:transparent}
+
 @media(prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
   .reveal{opacity:1;transform:none}body::before,body::after{animation:none}
@@ -361,6 +383,7 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber);
     <a class="navlink" data-nav="#/request" data-i18n="navRequest">Start a project</a>
   </nav>
   <div class="bar-actions">
+    <button class="ghost" id="editToggle">Edit layout</button>
     <button class="ghost" id="langBtn">العربية</button>
     <button class="ghost" id="adminBtn" data-i18n="studioAccess">Studio access</button>
   </div>
@@ -489,6 +512,17 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber);
   <span data-i18n="footNote">Built to move briefs into production faster.</span>
 </footer>
 
+<div class="edit-bar" id="editBar">
+  <div class="edit-pill">
+    <span id="editStatus">Edit mode — drag any tile</span>
+    <span class="sep">·</span>
+    <button id="editExport">Export</button>
+    <span class="sep">·</span>
+    <button id="editReset">Reset</button>
+    <span class="sep">·</span>
+    <button id="editDone">Done</button>
+  </div>
+</div>
 <div class="overlay" id="overlay"><div class="modal-wrap" id="modalWrap"></div></div>
 <div class="lightbox" id="lightbox"><button class="lb-close" id="lbClose">×</button><div class="lb-nav"><button id="lbPrev">‹</button><button id="lbNext">›</button></div><img id="lbImg" src="" alt="" /></div>
 
@@ -675,6 +709,35 @@ const STORAGE={
   remove(id){localStorage.setItem(STORE_KEY,JSON.stringify(this.all().filter(r=>r.id!==id)))},
   find(id){return this.all().find(r=>r.id===id)},
 };
+
+/* ---------------- LAYOUT (drag-and-drop reorder) ---------------- */
+const LAYOUT_KEY="scs_layout_v1";
+const LAYOUT={
+  read(){try{return JSON.parse(localStorage.getItem(LAYOUT_KEY)||"{}")}catch(e){return{}}},
+  write(o){localStorage.setItem(LAYOUT_KEY,JSON.stringify(o))},
+  get(k){return this.read()[k]||null},
+  set(k,v){const a=this.read();a[k]=v;this.write(a)},
+  clear(){localStorage.removeItem(LAYOUT_KEY)},
+};
+function itemKey(it){return it.src||it.label?.en||JSON.stringify(it)}
+function orderedItems(w){
+  const saved=LAYOUT.get("items:"+w.slug);
+  if(!Array.isArray(saved)||!saved.length)return w.items;
+  const idx=new Map(w.items.map(it=>[itemKey(it),it]));
+  const out=[],seen=new Set();
+  saved.forEach(k=>{if(idx.has(k)){out.push(idx.get(k));seen.add(k);}});
+  w.items.forEach(it=>{const k=itemKey(it);if(!seen.has(k))out.push(it);});
+  return out;
+}
+function orderedWorks(){
+  const saved=LAYOUT.get("fan");
+  if(!Array.isArray(saved)||!saved.length)return WORKS;
+  const idx=new Map(WORKS.map(w=>[w.slug,w]));
+  const out=[],seen=new Set();
+  saved.forEach(s=>{if(idx.has(s)){out.push(idx.get(s));seen.add(s);}});
+  WORKS.forEach(w=>{if(!seen.has(w.slug))out.push(w);});
+  return out;
+}
 
 /* ---------------- i18n ---------------- */
 const I18N={
@@ -909,7 +972,7 @@ function doLookup(){
 /* ---------------- admin ---------------- */
 function openAdminGate(){
   openOverlay('<div class="modal"><div class="modal-wrap"><button class="x" onclick="closeOverlay()">×</button><h2>'+t("adminTitle")+'</h2><p style="font-size:13px;color:var(--ink-3);margin-block-end:18px;font-weight:300">'+t("adminP")+'</p><input type="password" id="adminPass" style="margin-block-end:12px"/><button class="cta" id="adminEnter" style="width:100%">'+t("adminEnter")+'</button><div id="adminErr" style="color:var(--stop);font-size:12.5px;margin-block-start:10px;min-height:1em"></div></div></div>');
-  const go=()=>{if(document.getElementById("adminPass").value===CONFIG.adminPassword)renderAdmin();else document.getElementById("adminErr").textContent=t("adminWrong");};
+  const go=()=>{if(document.getElementById("adminPass").value===CONFIG.adminPassword){setAdmin(true);renderAdmin();}else document.getElementById("adminErr").textContent=t("adminWrong");};
   document.getElementById("adminEnter").addEventListener("click",go);
   document.getElementById("adminPass").addEventListener("keydown",e=>{if(e.key==="Enter")go();});
 }
@@ -985,8 +1048,8 @@ function renderWorkFan(){
   const host=document.getElementById("workFan");
   if(fanCleanup){fanCleanup();fanCleanup=null;}
   host.innerHTML="";
-  const cards=WORKS.map(w=>{
-    const a=document.createElement("a");a.className="fan-card";a.setAttribute("data-nav","#/work/"+w.slug);
+  const cards=orderedWorks().map(w=>{
+    const a=document.createElement("a");a.className="fan-card";a.setAttribute("data-nav","#/work/"+w.slug);a.setAttribute("data-slug",w.slug);
     if(w.kind==="empty")a.setAttribute("data-accent",w.accent);
     const isVid=w.kind==="video";
     const kick=w.client?wt(w,"client").split("·")[0].split("—")[0].trim():wt(w,"tag");
@@ -1004,29 +1067,38 @@ function renderWorkFan(){
   const onResize=()=>fanLayout(cards,fanHovered);
   window.addEventListener("resize",onResize);
   fanCleanup=()=>{enter.forEach(([el,h])=>el.removeEventListener("mouseenter",h));host.removeEventListener("mouseleave",onLeave);window.removeEventListener("resize",onResize);clearTimeout(leaveT);};
+  initSortableFor(host.parentNode);
 }
 function renderWorkView(slug){
   const w=workBySlug(slug);const host=document.getElementById("workView");
   if(!w){location.hash="#/";return;}
   let body="";
   if(w.kind==="video"){
-    if(w.items.length===1){
-      const it=w.items[0];
-      body='<div class="stage"><div class="phone"><video src="'+it.src+'" poster="'+(it.poster||"")+'" controls playsinline preload="metadata"></video></div>'+
+    const items=orderedItems(w);
+    if(items.length===1){
+      const it=items[0];
+      body='<div class="stage"><div class="phone" data-key="'+escapeHtml(itemKey(it))+'"><video src="'+it.src+'" poster="'+(it.poster||"")+'" controls playsinline preload="metadata"></video></div>'+
         '<div class="copy"><p>'+wt(w,"desc")+'</p><a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div></div>';
     } else {
       body='<p class="vid-desc">'+wt(w,"desc")+'</p>'+
-        '<div class="vid-grid">'+w.items.map(it=>'<div class="phone"><video src="'+it.src+'" poster="'+(it.poster||"")+'" controls playsinline preload="metadata"></video></div>').join("")+'</div>'+
+        '<div class="vid-grid" data-sort-slug="'+w.slug+'">'+items.map(it=>'<div class="phone" data-key="'+escapeHtml(itemKey(it))+'"><video src="'+it.src+'" poster="'+(it.poster||"")+'" controls playsinline preload="metadata"></video></div>').join("")+'</div>'+
         '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-block-start:8px"><a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div>';
     }
   } else if(w.kind==="identity"){
-    const imgs=w.items.map(i=>i.src);
+    const items=orderedItems(w);
     const pdfs=w.pdfs||(w.pdf?[{label:{en:t("viewPdf"),ar:t("viewPdf")},href:w.pdf}]:[]);
     const pdfBtns=pdfs.map(p=>'<a class="cta outline" href="'+p.href+'" target="_blank" rel="noopener">'+(p.label[lang]||p.label.en)+'</a>').join("");
     body='<p style="font-size:14.5px;color:var(--ink-2);font-weight:300;line-height:1.6;max-width:62ch;margin-block-end:24px">'+wt(w,"desc")+'</p>'+
-      '<div class="gallery">'+w.items.map((i,idx)=>'<div class="shot" data-lb="'+idx+'"><img src="'+i.src+'" loading="lazy" alt=""/></div>').join("")+'</div>'+
+      '<div class="gallery" data-sort-slug="'+w.slug+'">'+items.map(i=>'<div class="shot" data-key="'+escapeHtml(itemKey(i))+'" data-src="'+i.src+'"><img src="'+i.src+'" loading="lazy" alt=""/></div>').join("")+'</div>'+
       '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-block-start:26px">'+pdfBtns+'<a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div>';
-    setTimeout(()=>{host.querySelectorAll("[data-lb]").forEach(el=>el.addEventListener("click",()=>openLightbox(imgs,+el.dataset.lb)));},0);
+    setTimeout(()=>{
+      host.querySelectorAll(".gallery .shot").forEach(el=>el.addEventListener("click",()=>{
+        if(document.body.classList.contains("editing"))return;
+        const all=Array.from(host.querySelectorAll(".gallery .shot")).map(s=>s.dataset.src);
+        openLightbox(all,all.indexOf(el.dataset.src));
+      }));
+      initSortableFor(host);
+    },0);
   } else {
     body='<div class="cat-empty"><h3>'+t("catEmptyH")+'</h3><p>'+t("catEmptyP")+'</p><a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div>';
   }
@@ -1035,6 +1107,7 @@ function renderWorkView(slug){
     '<div class="cat-head reveal"><div class="eyebrow">'+t("workH")+'</div><h1>'+wt(w,"title")+'</h1><div class="tag">'+wt(w,"tag")+'</div>'+clientChip+'</div>'+
     '<div class="cat-body reveal">'+body+'</div>';
   initReveal();
+  initSortableFor(host);
 }
 
 /* ---------------- language ---------------- */
@@ -1086,6 +1159,50 @@ function router(){
 document.addEventListener("click",e=>{const el=e.target.closest("[data-nav]");if(el){e.preventDefault();const dest=el.getAttribute("data-nav");if(location.hash===dest)router();else location.hash=dest;}});
 window.addEventListener("hashchange",router);
 
+/* ---------------- layout edit mode ---------------- */
+const ADMIN_FLAG="scs_admin_ok";
+const sortInstances=[];
+function destroySortables(){while(sortInstances.length){try{sortInstances.pop().destroy()}catch(e){}}}
+function initSortableFor(root){
+  if(!document.body.classList.contains("editing")||typeof Sortable==="undefined")return;
+  const targets=root.querySelectorAll("[data-sort-slug], .fan");
+  targets.forEach(el=>{
+    const opts={animation:200,delay:120,delayOnTouchOnly:true,ghostClass:"sortable-ghost",chosenClass:"sortable-chosen",
+      onEnd:()=>{
+        if(el.classList.contains("fan")){
+          const order=Array.from(el.children).map(c=>c.dataset.slug).filter(Boolean);
+          LAYOUT.set("fan",order);
+        } else {
+          const slug=el.dataset.sortSlug;
+          const order=Array.from(el.children).map(c=>c.dataset.key).filter(Boolean);
+          LAYOUT.set("items:"+slug,order);
+        }
+        flashSaved();
+      }};
+    sortInstances.push(Sortable.create(el,opts));
+  });
+}
+function flashSaved(){const s=document.getElementById("editStatus");if(!s)return;const o=s.textContent;s.textContent="Saved ✓";setTimeout(()=>s.textContent=o,1000);}
+function setAdmin(on){document.body.classList.toggle("is-admin",on);if(on)localStorage.setItem(ADMIN_FLAG,"1");else localStorage.removeItem(ADMIN_FLAG);if(!on)setEditing(false);}
+function setEditing(on){
+  document.body.classList.toggle("editing",on);
+  document.getElementById("editToggle").classList.toggle("on",on);
+  destroySortables();
+  if(on){
+    // re-init sortables for whatever is currently rendered
+    initSortableFor(document);
+  } else {
+    // re-render current page to clean up
+    router();
+  }
+}
+function exportLayout(){
+  const data=JSON.stringify(LAYOUT.read(),null,2);
+  if(navigator.clipboard)navigator.clipboard.writeText(data);
+  openOverlay('<div class="modal"><div class="modal-wrap"><button class="x" onclick="closeOverlay()">×</button><h2>Layout exported</h2><p style="font-size:13px;color:var(--ink-3);margin:8px 0 14px;font-weight:300">Copied to clipboard. Paste it back to me to bake the order in for all visitors.</p><textarea readonly style="width:100%;min-height:240px;font-family:ui-monospace,Menlo,monospace;font-size:12px">'+escapeHtml(data)+'</textarea></div></div>');
+}
+function resetLayout(){if(confirm("Reset all custom ordering?")){LAYOUT.clear();flashSaved();setEditing(false);}}
+
 /* ---------------- init ---------------- */
 buildChips();wireInputs();
 document.getElementById("submitBtn").addEventListener("click",doSubmit);
@@ -1093,7 +1210,12 @@ document.getElementById("lookupBtn").addEventListener("click",doLookup);
 document.getElementById("lookupId").addEventListener("keydown",e=>{if(e.key==="Enter")doLookup();});
 document.getElementById("langBtn").addEventListener("click",()=>applyLang(lang==="ar"?"en":"ar"));
 document.getElementById("adminBtn").addEventListener("click",openAdminGate);
+document.getElementById("editToggle").addEventListener("click",()=>setEditing(!document.body.classList.contains("editing")));
+document.getElementById("editDone").addEventListener("click",()=>setEditing(false));
+document.getElementById("editExport").addEventListener("click",exportLayout);
+document.getElementById("editReset").addEventListener("click",resetLayout);
 document.getElementById("dateField").min=new Date().toISOString().split("T")[0];
+if(localStorage.getItem(ADMIN_FLAG))setAdmin(true);
 router();
 </script>
 </body>
