@@ -174,6 +174,9 @@ a{color:inherit;text-decoration:none}
 .phone video{width:100%;height:100%;object-fit:cover;display:block}
 .stage .copy{flex:1;min-width:240px}
 .stage .copy p{font-size:14.5px;color:var(--ink-2);font-weight:300;line-height:1.6;margin-block-end:18px}
+.vid-desc{font-size:14.5px;color:var(--ink-2);font-weight:300;line-height:1.6;max-width:62ch;margin-block-end:26px}
+.vid-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:clamp(16px,2vw,24px);margin-block-end:32px}
+.vid-grid .phone{width:100%;max-width:290px;margin-inline:auto}
 
 /* identity gallery */
 .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
@@ -519,28 +522,54 @@ const WORKS = [
     title:{en:"Brand film",ar:"فيلم العلامة"},
     tag:{en:"Cinematic storytelling for premium brands",ar:"سرد سينمائي للعلامات الراقية"},
     poster:"assets/posters/brand-film.jpg",
-    client:{en:"Awtar International — real estate",ar:"أوتار العالمية — العقارات"},
-    desc:{en:"A warm, golden-hour brand film — quiet luxury and cinematic restraint, where a single human moment carries the whole story.",
-          ar:"فيلم علامة بإضاءة ذهبية دافئة — فخامة هادئة وانضباط سينمائي، حيث تحمل لحظة إنسانية واحدة القصة بأكملها."},
-    items:[{type:"video",src:"assets/brand-film.mp4",poster:"assets/posters/brand-film.jpg"}] },
+    client:{en:"Awtar International, World Cup, heritage & AI cinematic",ar:"أوتار العالمية، كأس العالم، التراث، والسينمائي بالذكاء"},
+    desc:{en:"A collection of brand films — golden-hour real estate storytelling, AI cinematic clips, heritage spots and event films. Quiet luxury and cinematic restraint across formats.",
+          ar:"مجموعة من أفلام العلامات — سرد عقاري بإضاءة ذهبية، ولقطات سينمائية بالذكاء الاصطناعي، وأفلام تراثية وفعاليات. فخامة هادئة وانضباط سينمائي عبر مختلف الصيغ."},
+    items:[
+      {type:"video",src:"assets/brand-film.mp4",poster:"assets/posters/brand-film.jpg"},
+      {type:"video",src:"assets/film/ai-cinematic-01.mp4"},
+      {type:"video",src:"assets/film/ai-cinematic-02.mp4"},
+      {type:"video",src:"assets/film/ai-cinematic-03.mp4"},
+      {type:"video",src:"assets/film/ai-cinematic-04.mp4"},
+      {type:"video",src:"assets/film/ai-cinematic-06.mp4"},
+      {type:"video",src:"assets/film/ai-film-01.mp4"},
+      {type:"video",src:"assets/film/film-clips.mp4"},
+      {type:"video",src:"assets/film/world-cup.mp4"},
+      {type:"video",src:"assets/film/heritage.mp4"},
+    ] },
 
   { slug:"ai-ugc", kind:"video",
     title:{en:"AI UGC",ar:"محتوى UGC بالذكاء الاصطناعي"},
     tag:{en:"Synthetic creators that read as real iPhone UGC",ar:"صنّاع محتوى اصطناعيون يبدون كأنهم UGC حقيقي بالآيفون"},
     poster:"assets/posters/ai-ugc-noura.jpg",
-    client:{en:"Operamak — cosmetics · presenter: Noura",ar:"أوبرامك — مستحضرات تجميل · المقدِّمة: نورة"},
-    desc:{en:"One locked synthetic presenter, Noura, delivering native Saudi beauty UGC — reviews and demos that feel self-shot, not produced.",
-          ar:"مقدِّمة اصطناعية ثابتة، نورة، تقدّم محتوى تجميل سعودي أصيل — مراجعات وعروض تبدو ذاتية التصوير لا منتَجة."},
-    items:[{type:"video",src:"assets/ai-ugc-noura.mp4",poster:"assets/posters/ai-ugc-noura.jpg"}] },
+    client:{en:"Operamak, Noorah & multi-brand UGC",ar:"أوبرامك، نورة، ومحتوى UGC متعدد العلامات"},
+    desc:{en:"Locked synthetic presenters delivering native Saudi UGC — reviews, demos and ads that feel self-shot, not produced. One identity per brand, infinite shoots.",
+          ar:"مقدِّمون اصطناعيون ثابتون يقدّمون محتوى UGC سعودي أصيل — مراجعات وعروض وإعلانات تبدو ذاتية التصوير لا منتَجة. هوية واحدة لكل علامة، وتصوير بلا حدود."},
+    items:[
+      {type:"video",src:"assets/ai-ugc-noura.mp4",poster:"assets/posters/ai-ugc-noura.jpg"},
+      {type:"video",src:"assets/ugc/operamak.mp4"},
+      {type:"video",src:"assets/ugc/noorah.mp4"},
+      {type:"video",src:"assets/ugc/makeup.mp4"},
+      {type:"video",src:"assets/ugc/microphone.mp4"},
+      {type:"video",src:"assets/ugc/ugc-00.mp4"},
+      {type:"video",src:"assets/ugc/ugc-film-ai.mp4"},
+      {type:"video",src:"assets/ugc/ugc-content.mp4"},
+      {type:"video",src:"assets/ugc/ugc-ads.mp4"},
+      {type:"video",src:"assets/ugc/ugc-default.mp4"},
+      {type:"video",src:"assets/ugc/gold-ad.mp4"},
+    ] },
 
   { slug:"identity", kind:"identity",
     title:{en:"Identity",ar:"الهوية البصرية"},
     tag:{en:"Brand systems rooted in place",ar:"أنظمة علامة متجذّرة في المكان"},
     poster:"assets/identity/cover.jpg",
-    client:{en:"Saudi PMO community",ar:"مجتمع مكاتب إدارة المشاريع السعودية"},
-    desc:{en:"A complete bilingual brand guideline — heritage-green palette, Saudi architectural motifs, full logo system, and applications across print, digital and events.",
-          ar:"دليل هوية ثنائي اللغة متكامل — لوحة الأخضر التراثي، ونقوش العمارة السعودية، ونظام شعار كامل، وتطبيقاته عبر المطبوعات والرقمي والفعاليات."},
-    pdf:"assets/identity-saudi-pmo.pdf",
+    client:{en:"Saudi PMO community & brand strategy decks",ar:"مجتمع مكاتب إدارة المشاريع السعودية ودلائل بناء العلامة"},
+    desc:{en:"Complete bilingual brand guidelines — heritage palettes, Saudi architectural motifs, full logo systems, and the playbooks that turn a product into a brand.",
+          ar:"أدلة هوية ثنائية اللغة متكاملة — لوحات تراثية، ونقوش العمارة السعودية، وأنظمة شعار كاملة، ودلائل عملية تحوّل المنتج إلى علامة."},
+    pdfs:[
+      {label:{en:"Saudi PMO — brand guidelines",ar:"دليل هوية مجتمع PMO السعودي"}, href:"assets/identity-saudi-pmo.pdf"},
+      {label:{en:"Turn your product into a brand",ar:"حوّل منتجك إلى علامة"}, href:"assets/turn-product-into-brand.pdf"},
+    ],
     items:[
       {type:"image",src:"assets/identity/cover.jpg"},
       {type:"image",src:"assets/identity/p09.jpg"},
@@ -908,14 +937,22 @@ function renderWorkView(slug){
   if(!w){location.hash="#/";return;}
   let body="";
   if(w.kind==="video"){
-    const it=w.items[0];
-    body='<div class="stage"><div class="phone"><video src="'+it.src+'" poster="'+it.poster+'" controls playsinline preload="metadata"></video></div>'+
-      '<div class="copy"><p>'+wt(w,"desc")+'</p><a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div></div>';
+    if(w.items.length===1){
+      const it=w.items[0];
+      body='<div class="stage"><div class="phone"><video src="'+it.src+'" poster="'+(it.poster||"")+'" controls playsinline preload="metadata"></video></div>'+
+        '<div class="copy"><p>'+wt(w,"desc")+'</p><a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div></div>';
+    } else {
+      body='<p class="vid-desc">'+wt(w,"desc")+'</p>'+
+        '<div class="vid-grid">'+w.items.map(it=>'<div class="phone"><video src="'+it.src+'" poster="'+(it.poster||"")+'" controls playsinline preload="metadata"></video></div>').join("")+'</div>'+
+        '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-block-start:8px"><a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div>';
+    }
   } else if(w.kind==="identity"){
     const imgs=w.items.map(i=>i.src);
+    const pdfs=w.pdfs||(w.pdf?[{label:{en:t("viewPdf"),ar:t("viewPdf")},href:w.pdf}]:[]);
+    const pdfBtns=pdfs.map(p=>'<a class="cta outline" href="'+p.href+'" target="_blank" rel="noopener">'+(p.label[lang]||p.label.en)+'</a>').join("");
     body='<p style="font-size:14.5px;color:var(--ink-2);font-weight:300;line-height:1.6;max-width:62ch;margin-block-end:24px">'+wt(w,"desc")+'</p>'+
       '<div class="gallery">'+w.items.map((i,idx)=>'<div class="shot" data-lb="'+idx+'"><img src="'+i.src+'" loading="lazy" alt=""/></div>').join("")+'</div>'+
-      '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-block-start:26px"><a class="cta outline" href="'+w.pdf+'" target="_blank" rel="noopener">'+t("viewPdf")+'</a><a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div>';
+      '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-block-start:26px">'+pdfBtns+'<a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div>';
     setTimeout(()=>{host.querySelectorAll("[data-lb]").forEach(el=>el.addEventListener("click",()=>openLightbox(imgs,+el.dataset.lb)));},0);
   } else {
     body='<div class="cat-empty"><h3>'+t("catEmptyH")+'</h3><p>'+t("catEmptyP")+'</p><a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div>';
