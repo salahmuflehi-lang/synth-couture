@@ -744,9 +744,30 @@ function validateBeforeSend(){
   if(!state.date)return t("needDate");
   const r=rushCheck();if(!r.ok)return r.msg;return null;
 }
+const NOTIFY_EMAIL="salahmu111112@gmail.com";
+function emailNotify(rec){
+  const services=(rec.services||[]).map(serviceLabel).join(", ");
+  const payload={
+    _subject:"New request "+rec.id+" — "+(rec.brand||rec.name||"Unknown"),
+    _template:"table",
+    _captcha:"false",
+    "Request ID":rec.id,
+    "Name":rec.name,"Brand":rec.brand,"Email":rec.email,"WhatsApp":rec.whatsapp,
+    "Services":services,"Brief":rec.brief,
+    "Quantity":rec.quantity,"Ratios":(rec.ratios||[]).join(", "),"Platforms":(rec.platforms||[]).join(", "),
+    "References":rec.references,"Brand guide":rec.brandGuide,"Brand assets":rec.assets,
+    "Delivery date":rec.date,"Deadline":rec.deadline,"Pace":rec.pace,
+    "Budget":rec.budget,"Revisions":rec.revisions,
+    "Submitted":new Date(rec.ts).toISOString()
+  };
+  return fetch("https://formsubmit.co/ajax/"+NOTIFY_EMAIL,{
+    method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},
+    body:JSON.stringify(payload)
+  }).catch(()=>{});
+}
 function doSubmit(){
   const err=validateBeforeSend();if(err){flash(err);return;}
-  runLoader(()=>{const{pace}=computePace();const rec={id:genId(),ts:Date.now(),status:0,...state,services:[...state.services],pace};STORAGE.save(rec);showConfirm(rec);});
+  runLoader(()=>{const{pace}=computePace();const rec={id:genId(),ts:Date.now(),status:0,...state,services:[...state.services],pace};STORAGE.save(rec);emailNotify(rec);showConfirm(rec);});
 }
 function flash(msg){const n=document.getElementById("submitNote");n.textContent=msg;n.style.color="var(--stop)";setTimeout(()=>{n.textContent=t("submitNote");n.style.color="";},4200);}
 
