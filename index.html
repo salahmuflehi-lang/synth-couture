@@ -52,6 +52,40 @@
   --glass-shadow:0 30px 80px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.14);
 }
 .lang-ar{--sans:"Tajawal",-apple-system,"Segoe UI",sans-serif;--display:"Tajawal",sans-serif;}
+/* ---------- light (day) theme ---------- */
+body.theme-light{
+  --bg:#F6F1E8;--bg-2:#EAE2D2;
+  --glass:rgba(0,0,0,.04);--glass-2:rgba(0,0,0,.07);
+  --glass-line:rgba(0,0,0,.1);--glass-line-2:rgba(0,0,0,.18);
+  --ink:#1A1411;--ink-2:#5A4A3E;--ink-3:#857667;
+  --amber:#C4621F;--amber-strong:#A8501A;--amber-soft:rgba(196,98,31,.13);--amber-glow:rgba(196,98,31,.35);
+  --glass-shadow:0 30px 80px rgba(80,55,30,.12),inset 0 1px 0 rgba(255,255,255,.6);
+}
+html,body{transition:background-color .4s var(--ease),color .4s var(--ease)}
+body.theme-light::before{background:radial-gradient(circle,rgba(255,150,70,.12),transparent 65%);opacity:.7}
+body.theme-light::after{background:radial-gradient(circle,rgba(90,130,150,.1),transparent 65%);opacity:.7}
+body.theme-light .grain{background:radial-gradient(120% 80% at 50% 0%,transparent 50%,rgba(80,55,30,.12) 100%);opacity:.6}
+body.theme-light .bar{background:rgba(246,241,232,.7);border-block-end-color:rgba(0,0,0,.08)}
+body.theme-light .overlay{background:rgba(246,241,232,.78)}
+body.theme-light .modal{background:rgba(255,253,247,.92);box-shadow:0 50px 120px rgba(80,55,30,.22),inset 0 1px 0 rgba(255,255,255,.7)}
+body.theme-light .lightbox{background:rgba(246,241,232,.92)}
+body.theme-light .lb-nav button,body.theme-light .lb-close{background:rgba(0,0,0,.06);color:var(--ink)}
+body.theme-light .phone{box-shadow:0 24px 60px rgba(80,55,30,.2),inset 0 1px 0 rgba(255,255,255,.6);background:#fff}
+body.theme-light .tile{box-shadow:0 16px 40px rgba(80,55,30,.15)}
+body.theme-light .tile:hover{box-shadow:0 24px 56px rgba(80,55,30,.22)}
+body.theme-light .fan-card{box-shadow:0 20px 50px rgba(80,55,30,.18),inset 0 1px 0 rgba(255,255,255,.4)}
+body.theme-light .gallery .shot{box-shadow:0 10px 28px rgba(80,55,30,.14)}
+body.theme-light input[type=text],body.theme-light input[type=email],body.theme-light input[type=tel],body.theme-light input[type=number],body.theme-light input[type=date],body.theme-light textarea,body.theme-light select{background:rgba(0,0,0,.035);color-scheme:light}
+body.theme-light .cta{color:#fff8ee;box-shadow:0 10px 26px var(--amber-glow)}
+body.theme-light .cta:disabled{background:rgba(0,0,0,.08);color:var(--ink-3)}
+body.theme-light .brand-card img{filter:brightness(0) invert(28%) sepia(35%) saturate(900%) hue-rotate(355deg) brightness(95%) contrast(95%);opacity:.7}
+body.theme-light .marquee{-webkit-mask-image:linear-gradient(to right,transparent,black 10%,black 90%,transparent);mask-image:linear-gradient(to right,transparent,black 10%,black 90%,transparent)}
+body.theme-light .sec{background:rgba(255,253,247,.6);box-shadow:0 16px 40px rgba(80,55,30,.08),inset 0 1px 0 rgba(255,255,255,.6)}
+body.theme-light .brief{background:rgba(255,253,247,.75);box-shadow:0 24px 60px rgba(80,55,30,.15),inset 0 1px 0 rgba(255,255,255,.6)}
+body.theme-light .lookup-card{background:rgba(255,253,247,.65);box-shadow:0 18px 44px rgba(80,55,30,.1),inset 0 1px 0 rgba(255,255,255,.6)}
+body.theme-light .pwa-splash{background:radial-gradient(circle at 50% 40%,#fffaf0 0%,#EDE2CC 70%)}
+body.theme-light .pwa-text{color:var(--ink)}
+body.theme-light ::selection{background:var(--amber-soft);color:var(--ink)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.55;
@@ -436,6 +470,14 @@ body.pwa-splash-on .pwa-splash{display:flex}
 @keyframes pwaTitleIn{to{opacity:1}}
 @keyframes pwaSplashOut{to{opacity:0;visibility:hidden}}
 
+/* ---- theme toggle button ---- */
+.theme-btn{padding:8px 11px;display:inline-flex;align-items:center;justify-content:center;line-height:0}
+.theme-btn .ti{display:block;transition:transform .35s var(--ease),opacity .25s var(--ease)}
+.theme-btn .ti-sun{display:none}
+body.theme-light .theme-btn .ti-moon{display:none}
+body.theme-light .theme-btn .ti-sun{display:block}
+.theme-btn:hover .ti{transform:rotate(20deg)}
+
 /* ---- install (PWA) button ---- */
 .install-btn{display:none;align-items:center;gap:7px;border-color:rgba(255,176,112,.45);color:var(--amber)}
 body.can-install .install-btn{display:inline-flex}
@@ -501,6 +543,10 @@ body.is-admin #editToggle.on{background:var(--amber);color:#2a1808;border-color:
     <a class="navlink" data-nav="#/request" data-i18n="navRequest">Start a project</a>
   </nav>
   <div class="bar-actions">
+    <button class="ghost theme-btn" id="themeBtn" aria-label="Toggle theme">
+      <svg class="ti ti-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="ti ti-sun"  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
     <button class="ghost install-btn" id="installBtn" hidden><span class="install-glyph">⤓</span><span class="install-label">Install</span></button>
     <button class="ghost" id="editToggle">Edit layout</button>
     <button class="ghost" id="langBtn">العربية</button>
@@ -1439,6 +1485,22 @@ document.getElementById("submitBtn").addEventListener("click",doSubmit);
 document.getElementById("lookupBtn").addEventListener("click",doLookup);
 document.getElementById("lookupId").addEventListener("keydown",e=>{if(e.key==="Enter")doLookup();});
 document.getElementById("langBtn").addEventListener("click",()=>applyLang(lang==="ar"?"en":"ar"));
+/* theme toggle */
+const THEME_KEY="scs_theme";
+function applyTheme(t){
+  document.body.classList.toggle("theme-light",t==="light");
+  const meta=document.querySelector('meta[name="theme-color"]');
+  if(meta)meta.setAttribute("content",t==="light"?"#F6F1E8":"#0D0C0B");
+}
+(function initTheme(){
+  const saved=localStorage.getItem(THEME_KEY);
+  const prefers=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";
+  applyTheme(saved||prefers);
+})();
+document.getElementById("themeBtn").addEventListener("click",()=>{
+  const next=document.body.classList.contains("theme-light")?"dark":"light";
+  applyTheme(next);localStorage.setItem(THEME_KEY,next);
+});
 document.getElementById("adminBtn").addEventListener("click",openAdminGate);
 document.getElementById("editToggle").addEventListener("click",()=>setEditing(!document.body.classList.contains("editing")));
 document.getElementById("editDone").addEventListener("click",()=>setEditing(false));
