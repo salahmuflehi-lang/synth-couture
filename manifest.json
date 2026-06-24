@@ -1,7 +1,7 @@
 {
-  "name": "Synth Couture Studio",
-  "short_name": "Synth Couture",
-  "description": "Brand films, AI UGC, identity systems and editorial photography. Cinematic restraint with a Saudi sensibility.",
+  "name": "Frame Atelier",
+  "short_name": "Frame Atelier",
+  "description": "A creative atelier for brand films, AI UGC, identity systems and editorial photography — cinematic restraint at the intersection of architecture and storytelling.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
