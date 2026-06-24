@@ -19,6 +19,12 @@
 <meta name="twitter:description" content="Brand films, AI UGC, identity systems and editorial photography. Cinematic restraint with a Saudi sensibility." />
 <meta name="twitter:image" content="https://salahmuflehi-lang.github.io/synth-couture/assets/film/posters/world-cup.jpg" />
 <meta name="theme-color" content="#0D0C0B" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Synth Couture" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet" />
@@ -369,6 +375,13 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber);
 .mini.danger:hover{border-color:var(--stop);color:var(--stop)}
 .empty-state{text-align:center;padding:40px 20px;color:var(--ink-3);font-size:13px}
 
+/* ---- install (PWA) button ---- */
+.install-btn{display:none;align-items:center;gap:7px;border-color:rgba(255,176,112,.45);color:var(--amber)}
+body.can-install .install-btn{display:inline-flex}
+.install-btn:hover{background:var(--amber-soft);color:var(--ink);border-color:var(--amber)}
+.install-glyph{font-size:14px;line-height:1;display:inline-block;transform:translateY(-1px)}
+@media(max-width:520px){.install-btn .install-label{display:none}.install-btn{padding:8px 12px}.install-glyph{font-size:16px}}
+
 /* ---- floating CTA on category pages ---- */
 .float-cta{position:fixed;inset-block-end:24px;inset-inline-end:24px;z-index:55;
   background:linear-gradient(120deg,var(--amber),var(--amber-strong));color:#2a1808;
@@ -427,6 +440,7 @@ body.is-admin #editToggle.on{background:var(--amber);color:#2a1808;border-color:
     <a class="navlink" data-nav="#/request" data-i18n="navRequest">Start a project</a>
   </nav>
   <div class="bar-actions">
+    <button class="ghost install-btn" id="installBtn" hidden><span class="install-glyph">⤓</span><span class="install-label">Install</span></button>
     <button class="ghost" id="editToggle">Edit layout</button>
     <button class="ghost" id="langBtn">العربية</button>
     <button class="ghost" id="adminBtn" data-i18n="studioAccess">Studio access</button>
@@ -1335,6 +1349,50 @@ document.getElementById("editExport").addEventListener("click",exportLayout);
 document.getElementById("editReset").addEventListener("click",resetLayout);
 document.getElementById("dateField").min=new Date().toISOString().split("T")[0];
 if(localStorage.getItem(ADMIN_FLAG))setAdmin(true);
+
+/* ---------------- PWA: install prompt ---------------- */
+let deferredInstall=null;
+const installBtn=document.getElementById("installBtn");
+const INSTALL_DISMISS="scs_install_dismissed";
+const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||window.navigator.standalone;
+const isIos=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.MSStream;
+function showInstallBtn(){if(!isStandalone()&&!localStorage.getItem(INSTALL_DISMISS))document.body.classList.add("can-install");}
+function hideInstallBtn(){document.body.classList.remove("can-install");}
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;showInstallBtn();});
+window.addEventListener("appinstalled",()=>{deferredInstall=null;hideInstallBtn();});
+if(isIos()&&!isStandalone())showInstallBtn();
+installBtn.addEventListener("click",async()=>{
+  if(deferredInstall){
+    deferredInstall.prompt();
+    const{outcome}=await deferredInstall.userChoice;
+    if(outcome!=="accepted")localStorage.setItem(INSTALL_DISMISS,"1");
+    deferredInstall=null;hideInstallBtn();return;
+  }
+  if(isIos()){
+    openOverlay('<div class="modal"><div class="modal-wrap"><button class="x" onclick="closeOverlay()">×</button>'+
+      '<h2 style="margin-bottom:6px">Install Synth Couture</h2>'+
+      '<p style="font-size:13px;color:var(--ink-3);font-weight:300;margin-bottom:18px">Add this site to your home screen so it opens like an app — full-screen, one tap.</p>'+
+      '<ol style="font-size:14px;color:var(--ink-2);font-weight:300;line-height:1.9;padding-inline-start:20px;margin-bottom:18px">'+
+      '<li>Tap the <b style="color:var(--amber)">Share</b> icon at the bottom of Safari (the square with an arrow ↑).</li>'+
+      '<li>Scroll and tap <b style="color:var(--amber)">Add to Home Screen</b>.</li>'+
+      '<li>Tap <b style="color:var(--amber)">Add</b> in the top-right.</li>'+
+      '</ol>'+
+      '<button class="cta" style="width:100%" onclick="closeOverlay()">Got it</button>'+
+      '</div></div>');
+    return;
+  }
+  // Desktop / Android Chrome that haven't fired beforeinstallprompt yet — generic hint
+  openOverlay('<div class="modal"><div class="modal-wrap"><button class="x" onclick="closeOverlay()">×</button>'+
+    '<h2 style="margin-bottom:6px">Install Synth Couture</h2>'+
+    '<p style="font-size:14px;color:var(--ink-2);font-weight:300;line-height:1.6">In your browser menu, look for <b style="color:var(--amber)">Install app</b> or <b style="color:var(--amber)">Add to Home Screen</b>.</p>'+
+    '</div></div>');
+});
+
+/* register service worker (PWA install requirement) */
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+}
+
 router();
 </script>
 </body>
