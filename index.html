@@ -1119,6 +1119,28 @@ function validateBeforeSend(){
   const r=rushCheck();if(!r.ok)return r.msg;return null;
 }
 const NOTIFY_EMAIL="salahmuflehi@icloud.com";
+const TG_TOKEN="8889971054:AAFac1LotMleJYJKIIuEblD9s97P4_jeTGg";
+const TG_CHAT="6935048614";
+function telegramNotify(rec){
+  const services=(rec.services||[]).map(serviceLabel).join(", ");
+  const esc=s=>String(s||"").replace(/[<>&]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;"}[c]));
+  const line=(label,val)=>{const v=Array.isArray(val)?val.join(", "):val;return v?"<b>"+label+":</b> "+esc(v)+"\n":""};
+  const text=
+    "🎬 <b>New request</b> — <code>"+esc(rec.id)+"</code>\n"+
+    "—————————————\n"+
+    line("Name",rec.name)+line("Brand",rec.brand)+line("Email",rec.email)+line("WhatsApp",rec.whatsapp)+
+    line("Services",services)+
+    (rec.brief?"\n<b>Brief:</b>\n"+esc(rec.brief)+"\n":"")+
+    "\n"+line("Qty",rec.quantity)+line("Ratios",rec.ratios)+line("Platforms",rec.platforms)+
+    line("Delivery",rec.date)+line("Deadline",rec.deadline)+line("Pace",rec.pace)+
+    line("Budget",rec.budget)+line("Revisions",rec.revisions)+line("Brand guide",rec.brandGuide)+
+    (rec.references?"\n<b>References:</b>\n"+esc(rec.references)+"\n":"")+
+    (rec.assets?"\n<b>Assets:</b>\n"+esc(rec.assets)+"\n":"");
+  return fetch("https://api.telegram.org/bot"+TG_TOKEN+"/sendMessage",{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({chat_id:TG_CHAT,text:text,parse_mode:"HTML",disable_web_page_preview:true})
+  }).catch(()=>{});
+}
 function emailNotify(rec){
   const services=(rec.services||[]).map(serviceLabel).join(", ");
   const payload={
@@ -1141,7 +1163,7 @@ function emailNotify(rec){
 }
 function doSubmit(){
   const err=validateBeforeSend();if(err){flash(err);return;}
-  runLoader(()=>{const{pace}=computePace();const rec={id:genId(),ts:Date.now(),status:0,...state,services:[...state.services],pace};STORAGE.save(rec);emailNotify(rec);showConfirm(rec);});
+  runLoader(()=>{const{pace}=computePace();const rec={id:genId(),ts:Date.now(),status:0,...state,services:[...state.services],pace};STORAGE.save(rec);emailNotify(rec);telegramNotify(rec);showConfirm(rec);});
 }
 function flash(msg){const n=document.getElementById("submitNote");n.textContent=msg;n.style.color="var(--stop)";setTimeout(()=>{n.textContent=t("submitNote");n.style.color="";},4200);}
 
