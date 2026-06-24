@@ -4,6 +4,21 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Synth Couture Studio — Work & Project Requests</title>
+<meta name="description" content="A creative studio for brand films, AI-driven UGC, identity systems and editorial photography — cinematic restraint with a Saudi sensibility. Browse the work, then start your project." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://salahmuflehi-lang.github.io/synth-couture/" />
+<meta property="og:title" content="Synth Couture Studio — Brands, told cinematically." />
+<meta property="og:description" content="Brand films, AI UGC, identity systems and editorial photography. Cinematic restraint with a Saudi sensibility." />
+<meta property="og:image" content="https://salahmuflehi-lang.github.io/synth-couture/assets/film/posters/world-cup.jpg" />
+<meta property="og:image:width" content="1280" />
+<meta property="og:image:height" content="720" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="ar_SA" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Synth Couture Studio" />
+<meta name="twitter:description" content="Brand films, AI UGC, identity systems and editorial photography. Cinematic restraint with a Saudi sensibility." />
+<meta name="twitter:image" content="https://salahmuflehi-lang.github.io/synth-couture/assets/film/posters/world-cup.jpg" />
+<meta name="theme-color" content="#0D0C0B" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet" />
@@ -179,6 +194,14 @@ a{color:inherit;text-decoration:none}
 .vid-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:clamp(16px,2vw,24px);margin-block-end:32px}
 .vid-grid .phone{width:100%;max-width:290px;margin-inline:auto}
 
+/* group tabs (editorial) */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-block-end:18px}
+.tabs button{border:1px solid var(--glass-line);background:rgba(255,255,255,.04);color:var(--ink-2);
+  padding:8px 16px;border-radius:100px;font-size:12.5px;letter-spacing:.01em;font-family:inherit;cursor:pointer;transition:.25s var(--ease)}
+.tabs button:hover{border-color:var(--glass-line-2);color:var(--ink)}
+.tabs button.on{background:linear-gradient(120deg,var(--amber),var(--amber-strong));color:#2a1808;border-color:transparent;font-weight:500;box-shadow:0 6px 20px var(--amber-glow)}
+.tabs .count{opacity:.7;margin-inline-start:6px;font-size:11px}
+
 /* identity gallery */
 .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 @media(max-width:760px){.gallery{grid-template-columns:repeat(2,1fr)}}
@@ -346,6 +369,27 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber);
 .mini.danger:hover{border-color:var(--stop);color:var(--stop)}
 .empty-state{text-align:center;padding:40px 20px;color:var(--ink-3);font-size:13px}
 
+/* ---- floating CTA on category pages ---- */
+.float-cta{position:fixed;inset-block-end:24px;inset-inline-end:24px;z-index:55;
+  background:linear-gradient(120deg,var(--amber),var(--amber-strong));color:#2a1808;
+  padding:14px 22px;border-radius:100px;font-size:13.5px;font-weight:600;letter-spacing:.01em;
+  box-shadow:0 14px 38px var(--amber-glow),0 0 0 1px rgba(0,0,0,.05);
+  display:none;align-items:center;gap:8px;cursor:pointer;border:none;font-family:inherit;
+  transform:translateY(8px);opacity:0;transition:transform .35s var(--ease),opacity .35s var(--ease)}
+.float-cta.show{display:inline-flex;transform:translateY(0);opacity:1}
+.float-cta:hover{transform:translateY(-2px) scale(1.02)}
+.float-cta .arr{transition:transform .25s var(--ease)}
+.float-cta:hover .arr{transform:translateX(3px)}
+[dir=rtl] .float-cta:hover .arr{transform:translateX(-3px)}
+@media(max-width:520px){.float-cta{inset-block-end:18px;inset-inline-end:18px;padding:12px 18px;font-size:13px}}
+
+/* ---- mobile fan: simple grid below 700px ---- */
+@media(max-width:700px){
+  .fan{height:auto!important;display:grid!important;grid-template-columns:1fr 1fr;gap:14px;padding:6px 0;overflow:visible}
+  .fan-card{position:relative!important;left:auto!important;top:auto!important;transform:none!important;opacity:1!important;width:100%!important;aspect-ratio:3/4.15;z-index:auto!important;transition:none}
+  .fan-card .fc-meta{padding:12px 12px 14px}
+}
+
 /* ---- edit mode (drag-to-reorder) ---- */
 body.editing .gallery .shot,body.editing .vid-grid .phone,body.editing .fan-card{cursor:grab;outline:1.5px dashed var(--amber);outline-offset:4px;transition:outline-offset .2s var(--ease)}
 body.editing .gallery .shot:active,body.editing .vid-grid .phone:active,body.editing .fan-card:active{cursor:grabbing}
@@ -512,6 +556,7 @@ body.is-admin #editToggle.on{background:var(--amber);color:#2a1808;border-color:
   <span data-i18n="footNote">Built to move briefs into production faster.</span>
 </footer>
 
+<button class="float-cta" id="floatCta" data-nav="#/request"><span data-i18n="reqThis">Request this</span><span class="arr">→</span></button>
 <div class="edit-bar" id="editBar">
   <div class="edit-pill">
     <span id="editStatus">Edit mode — drag any tile</span>
@@ -622,6 +667,12 @@ const WORKS = [
     title:{en:"Editorial & photography",ar:"تصوير وإخراج"},
     tag:{en:"Stills, lookbooks, campaign imagery",ar:"صور ثابتة، لوك بوك، صور الحملات"},
     poster:"assets/photo/dsc06207.jpg",
+    groups:[
+      {key:"all",label:{en:"All",ar:"الكل"}},
+      {key:"ainy",label:{en:"Ainy Ainak",ar:"عيني عينك"},match:/ainy-ainak/i},
+      {key:"corp",label:{en:"Corporate visits",ar:"زيارات مؤسسية"},match:/(?:^|\/)(?:dsc|s0)/i},
+      {key:"misc",label:{en:"Studio & misc",ar:"استوديو ومتنوع"},match:/chatgpt|^(?!.*(ainy-ainak|\/dsc|\/s0)).+/i},
+    ],
     client:{en:"Ainy Ainak activation, corporate visits & on-site editorial",ar:"فعالية «عيني عينك»، الزيارات المؤسسية، والتصوير التحريري في الموقع"},
     desc:{en:"Event and campaign photography — corporate signings, brand activations, executive portraits, and on-site editorial. Clean, editorial-leaning frames built for press, PR and paid social.",
           ar:"تصوير الفعاليات والحملات — توقيعات شركات، تفعيلات علامات، صور تنفيذية، وتصوير تحريري داخل المواقع. لقطات نظيفة بحسٍّ تحريري للصحافة والعلاقات العامة والإعلانات المدفوعة."},
@@ -1024,6 +1075,8 @@ function respMult(w){if(w<480)return .28;if(w<640)return .38;if(w<768)return .5;
 function heightMult(w){let ideal;if(w<480)ideal=22*16;else if(w<640)ideal=26*16;else if(w<768)ideal=28*16;else if(w<1024)ideal=34*16;else ideal=38*16;const avail=window.innerHeight*0.7;return avail>=ideal?1:avail/ideal;}
 function slotConfig(n,slot){const center=n>>1;const d=n>1?(slot-center)/center:0;const a=Math.abs(d);return{rot:d*21,scale:1-0.2244*a*a,x:d*30,y:a*a*7.3,zIndex:10-Math.abs(slot-center)};}
 function fanLayout(cards,hovered){
+  // mobile: simple grid handled by CSS — don't apply JS transforms
+  if(window.innerWidth<=700){cards.forEach(el=>{el.style.transform="";el.style.zIndex="";el.style.transitionDelay="";});return;}
   const n=cards.length,mult=respMult(window.innerWidth),hM=heightMult(window.innerWidth),center=n>>1;
   cards.forEach((el,i)=>{
     const base=slotConfig(n,i);
@@ -1081,22 +1134,39 @@ function renderWorkView(slug){
         '<div class="copy"><p>'+wt(w,"desc")+'</p><a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div></div>';
     } else {
       body='<p class="vid-desc">'+wt(w,"desc")+'</p>'+
-        '<div class="vid-grid" data-sort-slug="'+w.slug+'">'+items.map(it=>'<div class="phone" data-key="'+escapeHtml(itemKey(it))+'"><video src="'+it.src+'" poster="'+(it.poster||"")+'" controls playsinline preload="metadata"></video></div>').join("")+'</div>'+
+        '<div class="vid-grid" data-sort-slug="'+w.slug+'">'+items.map(it=>'<div class="phone" data-key="'+escapeHtml(itemKey(it))+'"><video data-src="'+it.src+'" poster="'+(it.poster||"")+'" controls playsinline preload="none"></video></div>').join("")+'</div>'+
         '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-block-start:8px"><a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div>';
     }
   } else if(w.kind==="identity"){
     const items=orderedItems(w);
     const pdfs=w.pdfs||(w.pdf?[{label:{en:t("viewPdf"),ar:t("viewPdf")},href:w.pdf}]:[]);
     const pdfBtns=pdfs.map(p=>'<a class="cta outline" href="'+p.href+'" target="_blank" rel="noopener">'+(p.label[lang]||p.label.en)+'</a>').join("");
-    body='<p style="font-size:14.5px;color:var(--ink-2);font-weight:300;line-height:1.6;max-width:62ch;margin-block-end:24px">'+wt(w,"desc")+'</p>'+
+    let tabsHtml="";
+    if(w.groups&&w.groups.length>1){
+      tabsHtml='<div class="tabs" data-tabs="1">'+w.groups.map((g,i)=>{
+        const count=g.match?items.filter(it=>g.match.test(it.src)).length:items.length;
+        return '<button data-grp="'+g.key+'"'+(i===0?' class="on"':'')+'>'+(g.label[lang]||g.label.en)+'<span class="count">'+count+'</span></button>';
+      }).join("")+'</div>';
+    }
+    body='<p style="font-size:14.5px;color:var(--ink-2);font-weight:300;line-height:1.6;max-width:62ch;margin-block-end:24px">'+wt(w,"desc")+'</p>'+tabsHtml+
       '<div class="gallery" data-sort-slug="'+w.slug+'">'+items.map(i=>'<div class="shot" data-key="'+escapeHtml(itemKey(i))+'" data-src="'+i.src+'"><img src="'+i.src+'" loading="lazy" alt=""/></div>').join("")+'</div>'+
       '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-block-start:26px">'+pdfBtns+'<a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div>';
     setTimeout(()=>{
       host.querySelectorAll(".gallery .shot").forEach(el=>el.addEventListener("click",()=>{
         if(document.body.classList.contains("editing"))return;
-        const all=Array.from(host.querySelectorAll(".gallery .shot")).map(s=>s.dataset.src);
-        openLightbox(all,all.indexOf(el.dataset.src));
+        const visible=Array.from(host.querySelectorAll(".gallery .shot")).filter(s=>s.style.display!=="none").map(s=>s.dataset.src);
+        openLightbox(visible,visible.indexOf(el.dataset.src));
       }));
+      if(w.groups){
+        const tabs=host.querySelectorAll(".tabs[data-tabs] button");
+        tabs.forEach(btn=>btn.addEventListener("click",()=>{
+          tabs.forEach(b=>b.classList.remove("on"));btn.classList.add("on");
+          const g=w.groups.find(x=>x.key===btn.dataset.grp);
+          host.querySelectorAll(".gallery .shot").forEach(sh=>{
+            sh.style.display=(!g.match||g.match.test(sh.dataset.src))?"":"none";
+          });
+        }));
+      }
       initSortableFor(host);
     },0);
   } else {
@@ -1107,6 +1177,7 @@ function renderWorkView(slug){
     '<div class="cat-head reveal"><div class="eyebrow">'+t("workH")+'</div><h1>'+wt(w,"title")+'</h1><div class="tag">'+wt(w,"tag")+'</div>'+clientChip+'</div>'+
     '<div class="cat-body reveal">'+body+'</div>';
   initReveal();
+  initLazyVideos();
   initSortableFor(host);
 }
 
@@ -1130,6 +1201,15 @@ function initReveal(){
   const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target);}}),{threshold:0.1});
   document.querySelectorAll(".reveal:not(.in)").forEach(el=>io.observe(el));
 }
+/* lazy-load video src when within ~400px of viewport */
+function initLazyVideos(){
+  const vids=document.querySelectorAll("video[data-src]");
+  if(!vids.length)return;
+  const io=new IntersectionObserver(es=>es.forEach(en=>{
+    if(en.isIntersecting){const v=en.target;v.src=v.dataset.src;v.removeAttribute("data-src");v.preload="metadata";io.unobserve(v);}
+  }),{rootMargin:"400px 0px"});
+  vids.forEach(v=>io.observe(v));
+}
 
 /* ---------------- router ---------------- */
 function showPage(id){
@@ -1142,18 +1222,40 @@ function router(){
   const h=location.hash||"#/";
   const[path,query]=h.split("?");
   if(path.startsWith("#/work/")){
-    showPage("page-work");renderWorkView(path.replace("#/work/",""));
+    const slug=path.replace("#/work/","");
+    showPage("page-work");renderWorkView(slug);
+    setFloatCta(slug);
   } else if(path==="#/request"){
     showPage("page-request");
     document.querySelector('.navlink[data-nav="#/request"]').classList.add("on");
     // preselect service from ?s=slug
     if(query){const params=new URLSearchParams(query);const s=params.get("s");if(s&&!state.services.includes(s)&&workBySlug(s))state.services.push(s);}
     rebuildChipStates();refresh();initReveal();
+    setFloatCta(null);
   } else {
     showPage("page-home");
     document.querySelector('.navlink[data-nav="#/"]').classList.add("on");
     renderWorkFan();initReveal();
+    setFloatCta(null);
   }
+}
+let floatCtaObs=null;
+function setFloatCta(slug){
+  const btn=document.getElementById("floatCta");
+  if(floatCtaObs){floatCtaObs.disconnect();floatCtaObs=null;}
+  if(!slug){btn.classList.remove("show");return;}
+  btn.setAttribute("data-nav","#/request?s="+slug);
+  btn.classList.add("show");
+  // hide when an inline CTA inside the page is in view
+  setTimeout(()=>{
+    const inline=document.querySelectorAll('#page-work a.cta[data-nav^="#/request"]');
+    if(!inline.length)return;
+    floatCtaObs=new IntersectionObserver(es=>{
+      const anyVisible=es.some(en=>en.isIntersecting);
+      btn.classList.toggle("show",!anyVisible);
+    },{rootMargin:"-80px 0px"});
+    inline.forEach(el=>floatCtaObs.observe(el));
+  },0);
 }
 // intercept internal nav clicks
 document.addEventListener("click",e=>{
