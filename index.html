@@ -550,7 +550,6 @@ body.is-admin #editToggle.on{background:var(--amber);color:#2a1808;border-color:
     <button class="ghost install-btn" id="installBtn" hidden><span class="install-glyph">⤓</span><span class="install-label">Install</span></button>
     <button class="ghost" id="editToggle">Edit layout</button>
     <button class="ghost" id="langBtn">العربية</button>
-    <button class="ghost" id="adminBtn" data-i18n="studioAccess">Studio access</button>
   </div>
 </header>
 
@@ -1501,7 +1500,16 @@ document.getElementById("themeBtn").addEventListener("click",()=>{
   const next=document.body.classList.contains("theme-light")?"dark":"light";
   applyTheme(next);localStorage.setItem(THEME_KEY,next);
 });
-document.getElementById("adminBtn").addEventListener("click",openAdminGate);
+// hidden admin access: tap the wordmark 5 times in 2.5s, or visit #/admin
+(function(){
+  let taps=[];
+  document.querySelector(".mark .glyph").addEventListener("click",e=>{
+    const now=Date.now();taps=taps.filter(t=>now-t<2500);taps.push(now);
+    if(taps.length>=5){taps=[];openAdminGate();}
+  });
+  window.addEventListener("hashchange",()=>{if(location.hash==="#/admin"){history.replaceState(null,"",location.pathname+location.search);openAdminGate();}});
+  if(location.hash==="#/admin"){history.replaceState(null,"",location.pathname+location.search);setTimeout(openAdminGate,200);}
+})();
 document.getElementById("editToggle").addEventListener("click",()=>setEditing(!document.body.classList.contains("editing")));
 document.getElementById("editDone").addEventListener("click",()=>setEditing(false));
 document.getElementById("editExport").addEventListener("click",exportLayout);
