@@ -75,7 +75,21 @@ a{color:inherit;text-decoration:none}
   backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);
   border-block-end:1px solid var(--glass-line)}
 .mark{display:flex;align-items:baseline;gap:10px;cursor:pointer}
-.mark .glyph{font-family:var(--display);font-size:21px;font-weight:500;letter-spacing:-.01em;line-height:1}
+.mark .glyph{font-family:var(--display);font-size:21px;font-weight:500;letter-spacing:-.01em;line-height:1;
+  background:linear-gradient(110deg,var(--ink) 0%,var(--ink) 40%,#fff 48%,var(--amber) 52%,var(--ink) 60%,var(--ink) 100%);
+  background-size:300% 100%;background-position:120% 0;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:markShimmer 7s ease-in-out infinite}
+@keyframes markShimmer{
+  0%,12%   {background-position:120% 0}
+  45%,55%  {background-position:-20% 0}
+  88%,100% {background-position:-150% 0}
+}
+.mark .glyph::after{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--amber);
+  margin-inline-start:6px;vertical-align:middle;transform:translateY(-2px);
+  box-shadow:0 0 8px var(--amber-glow);animation:markPulse 2.4s ease-in-out infinite}
+@keyframes markPulse{0%,100%{opacity:.55;transform:translateY(-2px) scale(1)}50%{opacity:1;transform:translateY(-2px) scale(1.15)}}
+@media(prefers-reduced-motion:reduce){.mark .glyph{animation:none;color:var(--ink)}.mark .glyph::after{animation:none;opacity:.8}}
 .mark .sub{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--amber)}
 .lang-ar .mark .sub{letter-spacing:.12em}
 .nav{display:flex;align-items:center;gap:6px}
