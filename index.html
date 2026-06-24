@@ -1156,7 +1156,15 @@ function router(){
   }
 }
 // intercept internal nav clicks
-document.addEventListener("click",e=>{const el=e.target.closest("[data-nav]");if(el){e.preventDefault();const dest=el.getAttribute("data-nav");if(location.hash===dest)router();else location.hash=dest;}});
+document.addEventListener("click",e=>{
+  const el=e.target.closest("[data-nav]");
+  if(!el)return;
+  // in edit mode, don't navigate when the click was on a draggable tile — user meant to drag
+  if(document.body.classList.contains("editing")&&(el.matches(".fan-card")||el.closest("[data-sort-slug]"))){e.preventDefault();return;}
+  e.preventDefault();
+  const dest=el.getAttribute("data-nav");
+  if(location.hash===dest)router();else location.hash=dest;
+});
 window.addEventListener("hashchange",router);
 
 /* ---------------- layout edit mode ---------------- */
@@ -1185,6 +1193,15 @@ function initSortableFor(root){
 function flashSaved(){const s=document.getElementById("editStatus");if(!s)return;const o=s.textContent;s.textContent="Saved ✓";setTimeout(()=>s.textContent=o,1000);}
 function setAdmin(on){document.body.classList.toggle("is-admin",on);if(on)localStorage.setItem(ADMIN_FLAG,"1");else localStorage.removeItem(ADMIN_FLAG);if(!on)setEditing(false);}
 function setEditing(on){
+  if(on&&typeof Sortable==="undefined"){
+    // Sortable CDN still loading — wait up to 6s then retry
+    const btn=document.getElementById("editToggle");const orig=btn.textContent;btn.textContent="Loading…";btn.disabled=true;
+    let tries=0;const w=setInterval(()=>{tries++;
+      if(typeof Sortable!=="undefined"){clearInterval(w);btn.disabled=false;btn.textContent=orig;setEditing(true);}
+      else if(tries>30){clearInterval(w);btn.disabled=false;btn.textContent=orig;alert("Drag library failed to load. Check your connection and refresh.");}
+    },200);
+    return;
+  }
   document.body.classList.toggle("editing",on);
   document.getElementById("editToggle").classList.toggle("on",on);
   destroySortables();
@@ -1201,7 +1218,7 @@ function exportLayout(){
   if(navigator.clipboard)navigator.clipboard.writeText(data);
   openOverlay('<div class="modal"><div class="modal-wrap"><button class="x" onclick="closeOverlay()">×</button><h2>Layout exported</h2><p style="font-size:13px;color:var(--ink-3);margin:8px 0 14px;font-weight:300">Copied to clipboard. Paste it back to me to bake the order in for all visitors.</p><textarea readonly style="width:100%;min-height:240px;font-family:ui-monospace,Menlo,monospace;font-size:12px">'+escapeHtml(data)+'</textarea></div></div>');
 }
-function resetLayout(){if(confirm("Reset all custom ordering?")){LAYOUT.clear();flashSaved();setEditing(false);}}
+function resetLayout(){if(confirm("Reset all custom ordering?")){LAYOUT.clear();destroySortables();router();setTimeout(()=>initSortableFor(document),0);flashSaved();}}
 
 /* ---------------- init ---------------- */
 buildChips();wireInputs();
