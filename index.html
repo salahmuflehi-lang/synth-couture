@@ -30,6 +30,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js" defer></script>
 <style>
 /* ============================================================================
    SYNTH COUTURE STUDIO
@@ -398,6 +399,15 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber);
   animation:sheen 1.5s linear infinite;mix-blend-mode:screen}
 @keyframes sheen{from{transform:translateX(-110%)}to{transform:translateX(320%)}}
 .confirm{text-align:center}
+.js-title{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3);margin:28px 0 14px;text-align:start}
+.lang-ar .js-title{letter-spacing:.08em}
+.js-steps{display:flex;flex-direction:column;gap:14px;text-align:start}
+.js-step{display:flex;gap:14px;align-items:flex-start;padding:14px;border:1px solid var(--glass-line);border-radius:var(--r-sm);background:var(--glass)}
+.js-num{flex:none;width:28px;height:28px;border-radius:50%;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;line-height:1}
+.js-ttl{font-size:13.5px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.js-tx{font-size:12.5px;color:var(--ink-2);font-weight:300;line-height:1.5}
+.js-row{display:flex;gap:10px;margin-top:22px}
+.js-row .cta{flex:1;padding:12px 18px;font-size:13px}
 .confirm .seal{width:64px;height:64px;border-radius:50%;border:1px solid var(--amber);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;color:var(--amber);font-size:28px;box-shadow:0 0 30px var(--amber-glow);animation:pop .5s .1s both var(--ease)}
 .confirm .id{font-family:var(--display);font-weight:400;font-size:32px;color:var(--amber);margin:14px 0 6px;letter-spacing:.02em}
 .confirm p{font-size:13.5px;color:var(--ink-2);margin-block-end:6px;font-weight:300}
@@ -426,6 +436,30 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber);
 .mini:hover{border-color:var(--amber);color:var(--ink)}
 .mini.danger:hover{border-color:var(--stop);color:var(--stop)}
 .empty-state{text-align:center;padding:40px 20px;color:var(--ink-3);font-size:13px}
+
+/* ---- invoice modal ---- */
+.inv-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-block-end:18px}
+.inv-meta .field{margin:0}
+.inv-meta label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-block-end:5px;font-weight:500}
+.inv-meta input,.inv-meta select{padding:9px 11px;font-size:13px}
+.inv-rows{display:flex;flex-direction:column;gap:8px;margin-block-end:14px}
+.inv-rows .head{display:grid;grid-template-columns:1fr 70px 110px 110px 32px;gap:8px;padding:0 6px;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.inv-row{display:grid;grid-template-columns:1fr 70px 110px 110px 32px;gap:8px;align-items:center}
+.inv-row input{padding:9px 11px;font-size:13px}
+.inv-row .line-total{padding:9px 11px;font-size:13px;color:var(--ink-2);text-align:end;font-variant-numeric:tabular-nums}
+.inv-row button{width:32px;height:36px;border-radius:10px;border:1px solid var(--glass-line);background:var(--glass);color:var(--ink-3);font-size:18px;line-height:1}
+.inv-row button:hover{color:var(--stop);border-color:var(--stop)}
+.inv-add{margin-block-end:18px;background:var(--glass);border:1px dashed var(--glass-line-2);color:var(--ink-2);padding:9px 14px;border-radius:100px;font-size:12.5px;font-family:inherit;cursor:pointer}
+.inv-add:hover{color:var(--ink);border-color:var(--amber)}
+.inv-totals{display:grid;grid-template-columns:1fr 200px;gap:18px;margin-block-end:18px}
+.inv-notes{font-size:13px}
+.inv-sum{padding:14px 16px;border:1px solid var(--glass-line);border-radius:var(--r-sm);background:var(--glass);font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.inv-sum .row{display:flex;justify-content:space-between;padding:5px 0}
+.inv-sum .row.total{border-top:1px solid var(--glass-line);margin-top:6px;padding-top:11px;font-size:16px;color:var(--ink);font-weight:600}
+.inv-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.inv-actions .cta{padding:11px 22px;font-size:13px}
+.req .invoiced{display:inline-block;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border-radius:100px;border:1px solid var(--amber);color:var(--amber);margin-inline-start:6px}
+@media(max-width:560px){.inv-rows .head,.inv-row{grid-template-columns:1fr 60px 90px 90px 28px;gap:5px;font-size:11px}.inv-totals{grid-template-columns:1fr}}
 
 /* ---- brands marquee ---- */
 .marquee-section{margin-block:clamp(40px,6vw,68px) 0}
@@ -731,6 +765,19 @@ const CONFIG = {
   statuses:["Submitted","In production","Review","Delivered"],
 };
 
+/* Invoice issuer details — edit these to your real numbers; they print on every invoice PDF */
+const ISSUER={
+  name:"Frame Atelier",
+  tagline:"Jeddah, Saudi Arabia",
+  email:"salahmuflehi@icloud.com",
+  phone:"",
+  vatNumber:"",
+  bank:"",
+  iban:"",
+  accountName:"Frame Atelier",
+  thanks:"Thank you for choosing Frame Atelier."
+};
+
 const WORKS = [
   { slug:"identity", kind:"identity",
     title:{en:"Identity",ar:"الهوية البصرية"},
@@ -975,7 +1022,9 @@ const I18N={
     rushClear:"This timeline and budget work together. Ready to send.",
     needService:"Pick at least one service before sending.",needName:"Add your name and email so we can reach you.",needDate:"Choose a desired delivery date.",
     phases:["reading the brief","checking the timeline","scoping the work","logging your request"],
-    confirmTitle:"Request received",confirmLine1:"We've logged your brief.",confirmLine2:"Save this ID — use it to track status anytime.",copyId:"Copy ID",copied:"Copied",
+    confirmTitle:"Thank you",confirmGreet:"Hi {name}, your brief is in.",confirmLine1:"We've logged everything you sent. Save your request ID below — you can track its status here anytime.",confirmLine2:"",copyId:"Copy ID",copied:"Copied",
+    stepsTitle:"What happens next",step1Title:"We review",step1Body:"Within 24 hours we'll go through your brief and confirm scope.",step2Title:"You get a quote",step2Body:"A custom invoice lands in your inbox with pricing, timeline and terms.",step3Title:"Production starts",step3Body:"Once you approve, we move into production and you can track every stage above.",
+    trackMy:"Track my request",backHome:"Back to home",
     adminTitle:"Studio access",adminP:"Enter the studio password.",adminEnter:"Enter",adminWrong:"Wrong password.",
     inbox:"Requests",total:"Total",active:"In production",delivered:"Delivered",noReqs:"No requests yet. They'll appear here the moment a client sends one.",
     advance:"Advance status",reopen:"Move back",del:"Delete",confirmDel:"Delete this request permanently?",
@@ -1009,7 +1058,9 @@ const I18N={
     rushClear:"الجدول والميزانية متوافقان. جاهز للإرسال.",
     needService:"اختر خدمة واحدة على الأقل قبل الإرسال.",needName:"أضف اسمك وبريدك لنتمكن من التواصل معك.",needDate:"اختر تاريخ التسليم المطلوب.",
     phases:["نقرأ الموجز","نتحقق من الجدول","نحدّد نطاق العمل","نسجّل طلبك"],
-    confirmTitle:"تم استلام الطلب",confirmLine1:"سجّلنا موجزك.",confirmLine2:"احفظ هذا الرقم — استخدمه لمتابعة الحالة في أي وقت.",copyId:"نسخ الرقم",copied:"تم النسخ",
+    confirmTitle:"شكرًا لك",confirmGreet:"مرحبًا {name}، استلمنا موجزك.",confirmLine1:"سجّلنا كل ما أرسلته. احفظ رقم طلبك أدناه — يمكنك متابعة حالته هنا في أي وقت.",confirmLine2:"",copyId:"نسخ الرقم",copied:"تم النسخ",
+    stepsTitle:"الخطوات التالية",step1Title:"نراجع موجزك",step1Body:"خلال ٢٤ ساعة سنراجع موجزك ونؤكّد النطاق.",step2Title:"تصلك العروض",step2Body:"فاتورة مخصّصة في بريدك تتضمّن السعر والجدول الزمني والشروط.",step3Title:"يبدأ الإنتاج",step3Body:"بعد موافقتك ننتقل إلى الإنتاج، ويمكنك متابعة كل مرحلة من الأعلى.",
+    trackMy:"تتبّع طلبي",backHome:"العودة للرئيسية",
     adminTitle:"دخول الاستوديو",adminP:"أدخل كلمة مرور الاستوديو.",adminEnter:"دخول",adminWrong:"كلمة المرور خاطئة.",
     inbox:"الطلبات",total:"الإجمالي",active:"قيد الإنتاج",delivered:"تم التسليم",noReqs:"لا توجد طلبات بعد. ستظهر هنا فور إرسال العميل لطلب.",
     advance:"تقديم الحالة",reopen:"إرجاع",del:"حذف",confirmDel:"حذف هذا الطلب نهائيًا؟",
@@ -1186,8 +1237,23 @@ function runLoader(done){
   },150);
 }
 function showConfirm(rec){
-  openOverlay('<div class="modal"><div class="modal-wrap"><button class="x" onclick="closeOverlay()">×</button><div class="confirm"><div class="seal">✓</div><h2 style="margin:0">'+t("confirmTitle")+'</h2><p>'+t("confirmLine1")+'</p><div class="id" dir="ltr">'+rec.id+'</div><p>'+t("confirmLine2")+'</p><button class="copy-id" id="copyId">'+t("copyId")+'</button></div></div></div>');
+  const firstName=(rec.name||"").trim().split(/\s+/)[0]||"";
+  const greet=firstName?t("confirmGreet").replace("{name}",escapeHtml(firstName)):t("confirmTitle");
+  const step=(n,ttl,body)=>'<div class="js-step"><div class="js-num">'+n+'</div><div class="js-body"><div class="js-ttl">'+t(ttl)+'</div><div class="js-tx">'+t(body)+'</div></div></div>';
+  openOverlay('<div class="modal"><div class="modal-wrap"><button class="x" onclick="closeOverlay()">×</button>'+
+    '<div class="confirm"><div class="seal">✓</div>'+
+    '<h2 style="margin:0">'+t("confirmTitle")+'</h2>'+
+    '<p style="margin-top:6px;color:var(--ink-2)">'+greet+'</p>'+
+    '<p style="margin-top:6px">'+t("confirmLine1")+'</p>'+
+    '<div class="id" dir="ltr">'+rec.id+'</div>'+
+    '<button class="copy-id" id="copyId">'+t("copyId")+'</button>'+
+    '<div class="js-title">'+t("stepsTitle")+'</div>'+
+    '<div class="js-steps">'+step(1,"step1Title","step1Body")+step(2,"step2Title","step2Body")+step(3,"step3Title","step3Body")+'</div>'+
+    '<div class="js-row"><button class="cta outline" data-nav="#/" id="jsHome">'+t("backHome")+'</button><button class="cta" id="jsTrack">'+t("trackMy")+'</button></div>'+
+    '</div></div></div>');
   document.getElementById("copyId").addEventListener("click",function(){if(navigator.clipboard)navigator.clipboard.writeText(rec.id);this.textContent=t("copied");});
+  document.getElementById("jsHome").addEventListener("click",closeOverlay);
+  document.getElementById("jsTrack").addEventListener("click",()=>{closeOverlay();location.hash="#/";setTimeout(()=>{const f=document.getElementById("lookupId");if(f){f.value=rec.id;f.scrollIntoView({behavior:"smooth",block:"center"});doLookup();}},250);});
 }
 
 /* ---------------- status lookup ---------------- */
@@ -1217,7 +1283,7 @@ function reqCard(r){
   const services=(r.services||[]).map(serviceLabel);
   const kv=(k,v)=>v&&(Array.isArray(v)?v.length:String(v).trim())?'<div class="kv"><b>'+t(k)+'</b><span dir="auto">'+escapeHtml(Array.isArray(v)?v.join(", "):v)+'</span></div>':"";
   const paceLbl=r.pace?PACE_LABEL[lang][r.pace]:"";
-  return '<div class="req" data-id="'+r.id+'"><div class="req-top"><div><div class="req-id" dir="ltr">'+r.id+'</div><div class="req-meta">'+escapeHtml(r.brand||r.name||"")+' · '+when+'</div></div><span class="badge" data-s="'+r.status+'">'+STATUS_LABEL[lang][r.status]+'</span></div><div class="req-body">'+
+  return '<div class="req" data-id="'+r.id+'"><div class="req-top"><div><div class="req-id" dir="ltr">'+r.id+'</div><div class="req-meta">'+escapeHtml(r.brand||r.name||"")+' · '+when+(r.invoice?' · '+r.invoice.number+' · '+r.invoice.total.toLocaleString("en-US")+' '+(r.invoice.currency||"SAR"):'')+'</div></div><div style="display:flex;align-items:center;gap:6px">'+(r.invoice?'<span class="invoiced">INVOICED</span>':"")+'<span class="badge" data-s="'+r.status+'">'+STATUS_LABEL[lang][r.status]+'</span></div></div><div class="req-body">'+
     kv("sName",r.name)+kv("sBrand",r.brand)+
     '<div class="kv"><b>Email</b><span dir="ltr">'+escapeHtml(r.email||"")+' '+(r.whatsapp?("· "+escapeHtml(r.whatsapp)):"")+'</span></div>'+
     kv("sServices",services)+kv("sBrief",r.brief)+kv("sQuantity",r.quantity)+kv("sRatios",r.ratios)+kv("sPlatforms",r.platforms)+
@@ -1227,6 +1293,7 @@ function reqCard(r){
     kv("sDate",r.date)+'<div class="kv"><b>'+t("sPace")+'</b><span>'+paceLbl+' · '+(r.deadline==="Hard"?t("hard"):t("flexible"))+'</span></div>'+
     kv("sBudget",r.budget)+kv("sRevisions",r.revisions)+
     '<div class="req-actions">'+
+    '<button class="mini" onclick="openInvoiceModal(\''+r.id+'\')">📄 '+(r.invoice?"Re-issue invoice":"Generate invoice")+'</button>'+
     (r.status<3?'<button class="mini" onclick="advance(\''+r.id+'\',1)">'+t("advance")+' →</button>':"")+
     (r.status>0?'<button class="mini" onclick="advance(\''+r.id+'\',-1)">← '+t("reopen")+'</button>':"")+
     '<button class="mini danger" onclick="removeReq(\''+r.id+'\')">'+t("del")+'</button></div></div></div>';
@@ -1234,6 +1301,261 @@ function reqCard(r){
 function advance(id,dir){const r=STORAGE.find(id);if(!r)return;STORAGE.update(id,{status:Math.max(0,Math.min(3,r.status+dir))});renderAdmin();}
 function removeReq(id){if(confirm(t("confirmDel"))){STORAGE.remove(id);renderAdmin();}}
 window.advance=advance;window.removeReq=removeReq;
+
+/* ---------------- INVOICE generator ---------------- */
+const INV_COUNTER_KEY="scs_inv_counter";
+function nextInvoiceNumber(){
+  const n=(parseInt(localStorage.getItem(INV_COUNTER_KEY)||"0",10)||0)+1;
+  localStorage.setItem(INV_COUNTER_KEY,String(n));
+  const yy=new Date().getFullYear().toString().slice(2);
+  return "INV-"+yy+"-"+String(n).padStart(4,"0");
+}
+function todayIso(d){d=d||new Date();return d.toISOString().slice(0,10);}
+function fmt(n){return Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+function openInvoiceModal(reqId){
+  const r=STORAGE.find(reqId);if(!r)return;
+  const existing=r.invoice||{};
+  const number=existing.number||nextInvoiceNumber();
+  const issue=existing.issue||todayIso();
+  const due=existing.due||todayIso(new Date(Date.now()+14*86400000));
+  const currency=existing.currency||CONFIG.currency;
+  const rows=existing.items&&existing.items.length?existing.items:[{desc:(r.services||[]).map(serviceLabel).join(", ")||"Creative services",qty:1,price:0}];
+  const discount=existing.discountPct||0;
+  const vat=existing.vatPct!=null?existing.vatPct:15;
+  const notes=existing.notes||"50% deposit on acceptance, balance on delivery. Bank transfer details below.";
+  const bank=existing.bank||ISSUER.bank;
+  const iban=existing.iban||ISSUER.iban;
+
+  const rowHtml=(it,i)=>'<div class="inv-row" data-idx="'+i+'">'+
+    '<input type="text" data-f="desc" value="'+escapeHtml(it.desc||"")+'" placeholder="Description"/>'+
+    '<input type="number" data-f="qty" min="0" step="1" value="'+(it.qty||1)+'"/>'+
+    '<input type="number" data-f="price" min="0" step="0.01" value="'+(it.price||0)+'"/>'+
+    '<div class="line-total" data-line>'+fmt((it.qty||0)*(it.price||0))+'</div>'+
+    '<button type="button" onclick="invRemoveRow(this)" title="Remove">×</button></div>';
+
+  openOverlay('<div class="modal wide"><div class="modal-wrap"><button class="x" onclick="closeOverlay()">×</button>'+
+    '<h2 style="margin-bottom:4px">Generate invoice</h2>'+
+    '<p style="font-size:13px;color:var(--ink-3);margin-bottom:18px;font-weight:300">For request <b style="color:var(--amber)">'+r.id+'</b> · '+escapeHtml(r.brand||r.name||"")+'</p>'+
+    '<form id="invForm" onsubmit="return false">'+
+    '<div class="inv-meta">'+
+    '<div class="field"><label>Invoice #</label><input type="text" id="invNum" value="'+number+'"/></div>'+
+    '<div class="field"><label>Issue date</label><input type="date" id="invIssue" value="'+issue+'"/></div>'+
+    '<div class="field"><label>Due date</label><input type="date" id="invDue" value="'+due+'"/></div>'+
+    '<div class="field"><label>Currency</label><input type="text" id="invCur" value="'+currency+'" maxlength="4"/></div>'+
+    '</div>'+
+    '<div class="inv-rows" id="invRows">'+
+    '<div class="head"><div>Description</div><div>Qty</div><div>Unit price</div><div style="text-align:end">Total</div><div></div></div>'+
+    rows.map(rowHtml).join("")+
+    '</div>'+
+    '<button type="button" class="inv-add" onclick="invAddRow()">+ Add line</button>'+
+    '<div class="inv-totals">'+
+    '<div>'+
+    '<div class="field" style="margin-bottom:10px"><label>Discount %</label><input type="number" id="invDisc" min="0" max="100" step="0.5" value="'+discount+'"/></div>'+
+    '<div class="field" style="margin-bottom:10px"><label>VAT %</label><input type="number" id="invVat" min="0" max="100" step="0.5" value="'+vat+'"/></div>'+
+    '<div class="field" style="margin-bottom:10px"><label>Bank</label><input type="text" id="invBank" value="'+escapeHtml(bank)+'" placeholder="Bank name"/></div>'+
+    '<div class="field"><label>IBAN</label><input type="text" id="invIban" value="'+escapeHtml(iban)+'" placeholder="SA__"/></div>'+
+    '<div class="field" style="margin-top:10px"><label>Notes / terms</label><textarea class="inv-notes" id="invNotes" style="min-height:70px">'+escapeHtml(notes)+'</textarea></div>'+
+    '</div>'+
+    '<div><div class="inv-sum" id="invSum"></div></div>'+
+    '</div>'+
+    '<div class="inv-actions">'+
+    '<button type="button" class="cta outline" onclick="closeOverlay()">Cancel</button>'+
+    '<button type="button" class="cta" onclick="invDownload(\''+r.id+'\')">Download PDF</button>'+
+    '</div>'+
+    '</form>'+
+    '</div></div>');
+  invInit();
+}
+window.openInvoiceModal=openInvoiceModal;
+
+function invInit(){
+  const form=document.getElementById("invForm");
+  form.addEventListener("input",invRecompute);
+  invRecompute();
+}
+function invAddRow(){
+  const rows=document.getElementById("invRows");
+  const i=rows.querySelectorAll(".inv-row").length;
+  const div=document.createElement("div");
+  div.innerHTML='<div class="inv-row" data-idx="'+i+'"><input type="text" data-f="desc" placeholder="Description"/><input type="number" data-f="qty" min="0" step="1" value="1"/><input type="number" data-f="price" min="0" step="0.01" value="0"/><div class="line-total" data-line>0.00</div><button type="button" onclick="invRemoveRow(this)" title="Remove">×</button></div>';
+  rows.appendChild(div.firstChild);
+  invRecompute();
+}
+function invRemoveRow(btn){
+  const row=btn.closest(".inv-row");
+  if(document.querySelectorAll("#invRows .inv-row").length>1){row.remove();invRecompute();}
+}
+window.invAddRow=invAddRow;window.invRemoveRow=invRemoveRow;
+
+function invGather(){
+  const items=Array.from(document.querySelectorAll("#invRows .inv-row")).map(r=>({
+    desc:r.querySelector('[data-f=desc]').value,
+    qty:parseFloat(r.querySelector('[data-f=qty]').value)||0,
+    price:parseFloat(r.querySelector('[data-f=price]').value)||0,
+  }));
+  return{
+    number:document.getElementById("invNum").value.trim(),
+    issue:document.getElementById("invIssue").value,
+    due:document.getElementById("invDue").value,
+    currency:document.getElementById("invCur").value.trim()||"SAR",
+    items:items,
+    discountPct:parseFloat(document.getElementById("invDisc").value)||0,
+    vatPct:parseFloat(document.getElementById("invVat").value)||0,
+    bank:document.getElementById("invBank").value,
+    iban:document.getElementById("invIban").value,
+    notes:document.getElementById("invNotes").value,
+  };
+}
+function invTotals(inv){
+  const sub=inv.items.reduce((s,it)=>s+it.qty*it.price,0);
+  const disc=sub*(inv.discountPct/100);
+  const taxable=sub-disc;
+  const vat=taxable*(inv.vatPct/100);
+  const total=taxable+vat;
+  return{sub,disc,vat,total,taxable};
+}
+function invRecompute(){
+  document.querySelectorAll("#invRows .inv-row").forEach(r=>{
+    const q=parseFloat(r.querySelector('[data-f=qty]').value)||0;
+    const p=parseFloat(r.querySelector('[data-f=price]').value)||0;
+    r.querySelector('[data-line]').textContent=fmt(q*p);
+  });
+  const inv=invGather();
+  const t=invTotals(inv);
+  const cur=inv.currency;
+  document.getElementById("invSum").innerHTML=
+    '<div class="row"><span>Subtotal</span><span>'+fmt(t.sub)+' '+cur+'</span></div>'+
+    (inv.discountPct>0?'<div class="row"><span>Discount ('+inv.discountPct+'%)</span><span>−'+fmt(t.disc)+' '+cur+'</span></div>':'')+
+    (inv.vatPct>0?'<div class="row"><span>VAT ('+inv.vatPct+'%)</span><span>'+fmt(t.vat)+' '+cur+'</span></div>':'')+
+    '<div class="row total"><span>Total</span><span>'+fmt(t.total)+' '+cur+'</span></div>';
+}
+
+function invDownload(reqId){
+  if(typeof jspdf==="undefined"&&typeof window.jspdf==="undefined"){alert("PDF library still loading — try again in 2 seconds.");return;}
+  const r=STORAGE.find(reqId);if(!r)return;
+  const inv=invGather();
+  const t=invTotals(inv);
+  if(!inv.items.length||t.total<=0){alert("Add at least one line item with a price.");return;}
+  buildInvoicePDF(r,inv,t);
+  STORAGE.update(reqId,{invoice:{...inv,total:t.total,sentAt:Date.now()}});
+  closeOverlay();
+  setTimeout(renderAdmin,0);
+}
+window.invDownload=invDownload;
+
+function buildInvoicePDF(r,inv,t){
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:"mm",format:"a4"});
+  const W=210,H=297;
+  const M=18;
+  let y=22;
+
+  // header band
+  doc.setFillColor(22,22,22);doc.rect(0,0,W,38,"F");
+  doc.setTextColor(255,255,255);
+  doc.setFont("helvetica","bold");doc.setFontSize(20);
+  doc.text(ISSUER.name.toUpperCase(),M,18);
+  doc.setFont("helvetica","normal");doc.setFontSize(9);
+  doc.setTextColor(168,168,168);
+  doc.text(ISSUER.tagline,M,24);
+  if(ISSUER.email)doc.text(ISSUER.email,M,29);
+  // small red accent dot
+  doc.setFillColor(204,9,33);doc.circle(W-M,18,1.6,"F");
+  doc.setFontSize(8);doc.setTextColor(204,9,33);
+  doc.text("INVOICE",W-M-2,24,{align:"right"});
+
+  y=52;
+  // invoice meta block (left) + bill to (right)
+  doc.setTextColor(40,40,40);
+  doc.setFont("helvetica","bold");doc.setFontSize(26);
+  doc.text("Invoice",M,y);
+  doc.setFont("helvetica","normal");doc.setFontSize(9);
+  doc.setTextColor(120,120,120);
+  doc.text("Invoice #",M,y+8);doc.text("Issue date",M,y+14);doc.text("Due date",M,y+20);
+  doc.setTextColor(40,40,40);doc.setFontSize(10);
+  doc.text(inv.number,M+24,y+8);
+  doc.text(inv.issue,M+24,y+14);
+  doc.text(inv.due,M+24,y+20);
+
+  // Bill To
+  const bx=W/2+6;
+  doc.setFont("helvetica","bold");doc.setFontSize(9);
+  doc.setTextColor(120,120,120);
+  doc.text("BILL TO",bx,y);
+  doc.setFont("helvetica","normal");doc.setTextColor(40,40,40);doc.setFontSize(11);
+  let by=y+7;
+  if(r.brand){doc.setFont("helvetica","bold");doc.text(r.brand,bx,by);by+=5;doc.setFont("helvetica","normal");}
+  if(r.name){doc.setFontSize(10);doc.text(r.name,bx,by);by+=5;}
+  if(r.email){doc.text(r.email,bx,by);by+=4.5;}
+  if(r.whatsapp){doc.text(r.whatsapp,bx,by);by+=4.5;}
+  doc.setTextColor(120,120,120);doc.setFontSize(8);
+  doc.text("Ref: "+r.id,bx,by+2);
+
+  // Line items table
+  y=104;
+  doc.setFillColor(245,245,245);doc.rect(M,y,W-2*M,8,"F");
+  doc.setTextColor(80,80,80);doc.setFontSize(9);doc.setFont("helvetica","bold");
+  doc.text("DESCRIPTION",M+3,y+5.4);
+  doc.text("QTY",W-M-66,y+5.4,{align:"right"});
+  doc.text("UNIT",W-M-36,y+5.4,{align:"right"});
+  doc.text("TOTAL",W-M-3,y+5.4,{align:"right"});
+  y+=10;
+  doc.setFont("helvetica","normal");doc.setFontSize(10);doc.setTextColor(40,40,40);
+  inv.items.forEach((it,i)=>{
+    if(i%2===0){doc.setFillColor(252,252,252);doc.rect(M,y-4,W-2*M,8,"F");}
+    const descLines=doc.splitTextToSize(it.desc||"—",W-2*M-80);
+    descLines.forEach((line,li)=>doc.text(line,M+3,y+li*4.5));
+    doc.text(String(it.qty),W-M-66,y,{align:"right"});
+    doc.text(fmt(it.price),W-M-36,y,{align:"right"});
+    doc.text(fmt(it.qty*it.price),W-M-3,y,{align:"right"});
+    y+=Math.max(8,descLines.length*4.5+2);
+    if(y>240){doc.addPage();y=22;}
+  });
+
+  // Totals box (right side)
+  y+=6;
+  const tx=W-M-70;
+  const tw=70;
+  doc.setDrawColor(220,220,220);
+  doc.line(tx,y,W-M,y);y+=6;
+  doc.setFontSize(10);doc.setTextColor(80,80,80);
+  doc.text("Subtotal",tx,y);doc.text(fmt(t.sub)+" "+inv.currency,W-M,y,{align:"right"});y+=5.5;
+  if(inv.discountPct>0){doc.text("Discount ("+inv.discountPct+"%)",tx,y);doc.text("−"+fmt(t.disc)+" "+inv.currency,W-M,y,{align:"right"});y+=5.5;}
+  if(inv.vatPct>0){doc.text("VAT ("+inv.vatPct+"%)",tx,y);doc.text(fmt(t.vat)+" "+inv.currency,W-M,y,{align:"right"});y+=5.5;}
+  y+=1.5;doc.setDrawColor(40,40,40);doc.line(tx,y,W-M,y);y+=6;
+  doc.setFont("helvetica","bold");doc.setFontSize(13);doc.setTextColor(204,9,33);
+  doc.text("TOTAL",tx,y);doc.text(fmt(t.total)+" "+inv.currency,W-M,y,{align:"right"});
+  doc.setTextColor(40,40,40);doc.setFont("helvetica","normal");doc.setFontSize(10);
+  y+=14;
+
+  // Notes / payment info
+  if(inv.notes){
+    doc.setFontSize(9);doc.setTextColor(120,120,120);
+    doc.text("NOTES",M,y);doc.setTextColor(40,40,40);doc.setFontSize(10);
+    const notesLines=doc.splitTextToSize(inv.notes,W-2*M);
+    notesLines.forEach((ln,i)=>doc.text(ln,M,y+6+i*5));
+    y+=6+notesLines.length*5+8;
+  }
+  if(inv.bank||inv.iban||ISSUER.accountName){
+    doc.setFontSize(9);doc.setTextColor(120,120,120);
+    doc.text("PAYMENT",M,y);
+    doc.setTextColor(40,40,40);doc.setFontSize(10);
+    let py=y+6;
+    if(ISSUER.accountName){doc.text("Account: "+ISSUER.accountName,M,py);py+=5;}
+    if(inv.bank){doc.text("Bank: "+inv.bank,M,py);py+=5;}
+    if(inv.iban){doc.text("IBAN: "+inv.iban,M,py);py+=5;}
+    if(ISSUER.vatNumber){doc.text("VAT no.: "+ISSUER.vatNumber,M,py);py+=5;}
+    y=py+4;
+  }
+
+  // footer
+  doc.setFontSize(9);doc.setTextColor(160,160,160);
+  doc.text(ISSUER.thanks||"",M,H-12);
+  doc.text(ISSUER.name+" · "+ISSUER.tagline,W-M,H-12,{align:"right"});
+
+  doc.save(inv.number+"_"+(r.brand||r.name||r.id).replace(/[^a-z0-9]+/gi,"_")+".pdf");
+}
 document.addEventListener("click",e=>{const top=e.target.closest(".req-top");if(top)top.closest(".req").classList.toggle("open");});
 
 /* ---------------- lightbox ---------------- */
