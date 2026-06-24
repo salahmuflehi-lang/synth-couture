@@ -385,13 +385,14 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber);
 .marquee-track{display:flex;gap:clamp(24px,4vw,52px);width:max-content;align-items:center;
   animation:marqueeScroll 42s linear infinite}
 .marquee:hover .marquee-track{animation-play-state:paused}
-.brand-card{flex:none;background:#fff;border-radius:14px;height:78px;min-width:148px;padding:0 22px;
-  display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.6);
-  transition:transform .3s var(--ease)}
-.brand-card:hover{transform:translateY(-2px)}
+.brand-card{flex:none;background:transparent;border:none;box-shadow:none;height:78px;min-width:148px;padding:0 22px;
+  display:flex;align-items:center;justify-content:center;transition:opacity .3s var(--ease)}
 .brand-card.wide{min-width:280px}
-.brand-card img{max-height:46px;max-width:100%;width:auto;object-fit:contain;display:block}
+.brand-card img{max-height:46px;max-width:100%;width:auto;object-fit:contain;display:block;
+  filter:brightness(0) invert(62%) sepia(38%) saturate(440%) hue-rotate(345deg) brightness(95%) contrast(88%);
+  opacity:.75;transition:opacity .3s var(--ease),filter .3s var(--ease)}
 .brand-card.wide img{max-height:38px}
+.brand-card:hover img{opacity:1}
 @keyframes marqueeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 [dir=rtl] .marquee-track{animation-name:marqueeScrollRtl}
 @keyframes marqueeScrollRtl{from{transform:translateX(0)}to{transform:translateX(50%)}}
