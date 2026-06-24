@@ -375,6 +375,29 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber);
 .mini.danger:hover{border-color:var(--stop);color:var(--stop)}
 .empty-state{text-align:center;padding:40px 20px;color:var(--ink-3);font-size:13px}
 
+/* ---- brands marquee ---- */
+.marquee-section{margin-block:clamp(40px,6vw,68px) 0}
+.marquee-title{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--ink-3);text-align:center;margin-block-end:22px}
+.lang-ar .marquee-title{letter-spacing:.1em}
+.marquee{position:relative;overflow:hidden;width:100%;
+  -webkit-mask-image:linear-gradient(to right,transparent,black 8%,black 92%,transparent);
+  mask-image:linear-gradient(to right,transparent,black 8%,black 92%,transparent)}
+.marquee-track{display:flex;gap:clamp(24px,4vw,52px);width:max-content;align-items:center;
+  animation:marqueeScroll 42s linear infinite}
+.marquee:hover .marquee-track{animation-play-state:paused}
+.brand-card{flex:none;background:#fff;border-radius:14px;height:78px;min-width:148px;padding:0 22px;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.6);
+  transition:transform .3s var(--ease)}
+.brand-card:hover{transform:translateY(-2px)}
+.brand-card.wide{min-width:280px}
+.brand-card img{max-height:46px;max-width:100%;width:auto;object-fit:contain;display:block}
+.brand-card.wide img{max-height:38px}
+@keyframes marqueeScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+[dir=rtl] .marquee-track{animation-name:marqueeScrollRtl}
+@keyframes marqueeScrollRtl{from{transform:translateX(0)}to{transform:translateX(50%)}}
+@media(prefers-reduced-motion:reduce){.marquee-track{animation:none}.marquee{overflow:auto}}
+@media(max-width:520px){.brand-card{height:64px;min-width:128px;padding:0 16px}.brand-card.wide{min-width:240px}.brand-card img{max-height:38px}}
+
 /* ---- install (PWA) button ---- */
 .install-btn{display:none;align-items:center;gap:7px;border-color:rgba(255,176,112,.45);color:var(--amber)}
 body.can-install .install-btn{display:inline-flex}
@@ -465,6 +488,11 @@ body.is-admin #editToggle.on{background:var(--amber);color:#2a1808;border-color:
           <a class="cta" data-nav="#/request" data-i18n="ctaRequest">Start a project</a>
         </div>
       </div>
+
+      <section class="marquee-section reveal" aria-label="Brands we work with">
+        <div class="marquee-title" data-i18n="brandsTitle">Brands we work with</div>
+        <div class="marquee"><div class="marquee-track" id="brandsTrack"></div></div>
+      </section>
 
       <div class="sec-title reveal" style="margin-top:clamp(40px,6vw,72px)">
         <h2 data-i18n="lookH">Track a request</h2>
@@ -775,6 +803,27 @@ const STORAGE={
   find(id){return this.all().find(r=>r.id===id)},
 };
 
+/* ---------------- BRANDS marquee ---------------- */
+const BRANDS=[
+  {src:"assets/brands/saden-row.png",alt:"NHC, Al Mnabr, Saadi & Partners",wide:true},
+  {src:"assets/brands/mabani.png",alt:"Mabani Design & Build"},
+  {src:"assets/brands/cover-0.png",alt:"Mabani Aljazeera Holding Group"},
+  {src:"assets/brands/hempel.png",alt:"Hempel"},
+  {src:"assets/brands/elsewedy.png",alt:"Elsewedy Electric"},
+  {src:"assets/brands/roshn.svg",alt:"Roshn"},
+  {src:"assets/brands/cover-3.png",alt:"Brand partner"},
+  {src:"assets/brands/cover-4.png",alt:"Brand partner"},
+  {src:"assets/brands/cover-5.png",alt:"Brand partner"},
+  {src:"assets/brands/cover-7.png",alt:"Brand partner"},
+];
+function buildBrands(){
+  const track=document.getElementById("brandsTrack");
+  if(!track)return;
+  const card=b=>'<div class="brand-card'+(b.wide?' wide':'')+'"><img src="'+encodeURI(b.src)+'" alt="'+escapeHtml(b.alt)+'" loading="lazy"/></div>';
+  // duplicate the list so the keyframe loop (translateX 0 → -50%) appears seamless
+  track.innerHTML=BRANDS.map(card).join("")+BRANDS.map(card).join("");
+}
+
 /* ---------------- LAYOUT (drag-and-drop reorder) ---------------- */
 const LAYOUT_KEY="scs_layout_v1";
 const LAYOUT={
@@ -812,6 +861,7 @@ const I18N={
     heroLede:"A creative studio for brand films, AI-driven UGC, and identity systems — built with cinematic restraint and a Saudi sensibility. Browse the work, then start your project.",
     ctaRequest:"Start a project",ctaWork:"Browse work",
     workH:"Selected work",workP:"Tap a discipline to see the work.",
+    brandsTitle:"Brands we work with",
     lookH:"Track a request",lookP:"Enter your request ID to see where it is in production.",lookBtn:"Track",
     backHome:"Back",backWork:"All work",
     clientLabel:"Client",viewPdf:"View full guidelines (PDF)",reqThis:"Request this",
@@ -845,6 +895,7 @@ const I18N={
     heroLede:"استوديو إبداعي لأفلام العلامات، ومحتوى UGC بالذكاء الاصطناعي، وأنظمة الهوية — بانضباط سينمائي وحسّ سعودي. تصفّح الأعمال، ثم ابدأ مشروعك.",
     ctaRequest:"ابدأ مشروعًا",ctaWork:"تصفّح الأعمال",
     workH:"أعمال مختارة",workP:"اضغط على أي تخصص لرؤية أعماله.",
+    brandsTitle:"علامات نعمل معها",
     lookH:"تتبّع طلبًا",lookP:"أدخل رقم طلبك لمعرفة مرحلته في الإنتاج.",lookBtn:"تتبّع",
     backHome:"رجوع",backWork:"كل الأعمال",
     clientLabel:"العميل",viewPdf:"عرض الدليل كاملًا (PDF)",reqThis:"اطلب هذا",
@@ -1337,7 +1388,7 @@ function exportLayout(){
 function resetLayout(){if(confirm("Reset all custom ordering?")){LAYOUT.clear();destroySortables();router();setTimeout(()=>initSortableFor(document),0);flashSaved();}}
 
 /* ---------------- init ---------------- */
-buildChips();wireInputs();
+buildChips();wireInputs();buildBrands();
 document.getElementById("submitBtn").addEventListener("click",doSubmit);
 document.getElementById("lookupBtn").addEventListener("click",doLookup);
 document.getElementById("lookupId").addEventListener("keydown",e=>{if(e.key==="Enter")doLookup();});
