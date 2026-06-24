@@ -20,6 +20,7 @@
 <meta name="twitter:image" content="https://salahmuflehi-lang.github.io/synth-couture/assets/film/posters/world-cup.jpg" />
 <meta name="theme-color" content="#0D0C0B" />
 <link rel="manifest" href="manifest.json" />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
 <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -413,6 +414,28 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber);
 @media(prefers-reduced-motion:reduce){.marquee-track{animation:none}.marquee{overflow:auto}}
 @media(max-width:520px){.brand-card{height:64px;min-width:128px;padding:0 16px}.brand-card.wide{min-width:240px}.brand-card img{max-height:38px}}
 
+/* ---- PWA splash overlay (only shows on installed-app cold launch) ---- */
+.pwa-splash{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;gap:22px;
+  background:radial-gradient(circle at 50% 40%,#221b14 0%,#0D0C0B 60%)}
+body.pwa-splash-on .pwa-splash{display:flex}
+.pwa-splash.out{animation:pwaSplashOut .55s var(--ease) forwards}
+.pwa-splash-mark{position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center;
+  animation:pwaMarkIn .8s cubic-bezier(.22,1,.36,1) both}
+.pwa-ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--amber);opacity:.55;
+  animation:pwaRingPulse 1.8s ease-in-out infinite}
+.pwa-ring::after{content:"";position:absolute;inset:-10px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,160,90,.32),transparent 65%);filter:blur(8px)}
+.pwa-text{font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;font-weight:400;font-size:46px;letter-spacing:-.01em;color:var(--ink);position:relative;z-index:1}
+.pwa-dot{position:absolute;inset-block-end:18px;inset-inline-start:50%;width:6px;height:6px;border-radius:50%;background:var(--amber-strong);
+  transform:translateX(-50%);box-shadow:0 0 10px var(--amber-glow);animation:pwaDotPulse 1.4s ease-in-out infinite}
+.pwa-splash-title{font-family:var(--display);font-weight:300;font-size:20px;letter-spacing:.04em;color:var(--ink-2);opacity:0;
+  animation:pwaTitleIn .7s .35s var(--ease) forwards}
+@keyframes pwaMarkIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes pwaRingPulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.08);opacity:1}}
+@keyframes pwaDotPulse{0%,100%{opacity:.5;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.5)}}
+@keyframes pwaTitleIn{to{opacity:1}}
+@keyframes pwaSplashOut{to{opacity:0;visibility:hidden}}
+
 /* ---- install (PWA) button ---- */
 .install-btn{display:none;align-items:center;gap:7px;border-color:rgba(255,176,112,.45);color:var(--amber)}
 body.can-install .install-btn{display:inline-flex}
@@ -613,6 +636,14 @@ body.is-admin #editToggle.on{background:var(--amber);color:#2a1808;border-color:
   <span data-i18n="footNote">Built to move briefs into production faster.</span>
 </footer>
 
+<div class="pwa-splash" id="pwaSplash" aria-hidden="true">
+  <div class="pwa-splash-mark">
+    <span class="pwa-ring"></span>
+    <span class="pwa-text">SC</span>
+    <span class="pwa-dot"></span>
+  </div>
+  <div class="pwa-splash-title">Synth Couture</div>
+</div>
 <button class="float-cta" id="floatCta" data-nav="#/request"><span data-i18n="reqThis">Request this</span><span class="arr">→</span></button>
 <div class="edit-bar" id="editBar">
   <div class="edit-pill">
@@ -1458,6 +1489,14 @@ installBtn.addEventListener("click",async()=>{
 if("serviceWorker" in navigator){
   window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 }
+
+/* PWA splash: only on cold launch of the installed app (standalone mode) */
+(function(){
+  if(!isStandalone())return;
+  document.body.classList.add("pwa-splash-on");
+  const splash=document.getElementById("pwaSplash");
+  setTimeout(()=>{splash.classList.add("out");setTimeout(()=>{document.body.classList.remove("pwa-splash-on");splash.remove();},600);},1400);
+})();
 
 router();
 </script>
