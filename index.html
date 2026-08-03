@@ -461,6 +461,36 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber);
 .req .invoiced{display:inline-block;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border-radius:100px;border:1px solid var(--amber);color:var(--amber);margin-inline-start:6px}
 @media(max-width:560px){.inv-rows .head,.inv-row{grid-template-columns:1fr 60px 90px 90px 28px;gap:5px;font-size:11px}.inv-totals{grid-template-columns:1fr}}
 
+/* ---- About page ---- */
+.about-wrap{padding-block:clamp(28px,4vw,48px) clamp(80px,10vw,140px)}
+.about-hero{max-width:920px;margin:clamp(20px,3vw,40px) 0 clamp(48px,7vw,84px)}
+.about-eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--amber);margin-block-end:22px}
+.lang-ar .about-eyebrow{letter-spacing:.1em}
+.about-h1{font-family:var(--display);font-weight:200;font-size:clamp(34px,5.2vw,68px);line-height:1.05;letter-spacing:-.025em}
+.about-h1 br{display:block}
+.lang-ar .about-h1{font-weight:300;letter-spacing:-.01em}
+.about-body{max-width:720px}
+.about-lede{font-size:clamp(15px,1.5vw,18px);color:var(--ink-2);font-weight:300;line-height:1.65;margin-block-end:22px}
+.about-line{font-size:clamp(20px,2.4vw,30px);color:var(--ink);font-family:var(--display);font-weight:300;letter-spacing:-.02em;margin-block:18px 8px}
+.about-line em{font-style:normal;color:var(--amber)}
+.about-rule{height:1px;background:var(--glass-line);margin-block:clamp(38px,5vw,64px) clamp(34px,4vw,52px)}
+.about-h2{font-family:var(--display);font-weight:200;font-size:clamp(26px,3vw,40px);letter-spacing:-.02em;margin-block-end:24px}
+.about-tri{display:grid;grid-template-columns:1fr;gap:22px;margin-block-end:8px}
+@media(min-width:820px){.about-tri{grid-template-columns:1fr 1fr 1fr;gap:26px}}
+.about-col{padding:22px;border:1px solid var(--glass-line);border-radius:var(--r);background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.about-num{font-family:var(--display);font-weight:200;font-size:22px;color:var(--amber);letter-spacing:.05em;margin-block-end:10px}
+.about-col h3{font-family:var(--display);font-weight:300;font-size:22px;letter-spacing:-.01em;margin-block-end:8px;color:var(--ink)}
+.about-col p{font-size:13.5px;color:var(--ink-2);font-weight:300;line-height:1.6}
+.about-clients{font-size:14px;color:var(--ink-2);font-weight:400;line-height:1.9;letter-spacing:.01em}
+.about-pull{border-inline-start:2px solid var(--amber);padding:6px 0 6px 22px;margin-block-end:clamp(30px,4vw,44px)}
+[dir=rtl] .about-pull{border-inline-start:none;border-inline-end:2px solid var(--amber);padding:6px 22px 6px 0}
+.about-pull-text{font-family:var(--display);font-weight:300;font-size:clamp(18px,2.2vw,26px);color:var(--ink);letter-spacing:-.01em;line-height:1.35;margin-block-end:10px}
+.about-pull-text em{font-style:normal;color:var(--amber)}
+.about-pull-caption{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-3)}
+.lang-ar .about-pull-caption{letter-spacing:.08em}
+.about-cta-row{margin-block-start:36px;display:flex;flex-wrap:wrap;gap:12px}
+.about-cta-row .cta{padding:16px 30px;font-size:14.5px}
+
 /* ---- "What we offer" animated section ---- */
 .offer-section{margin-block:clamp(60px,10vw,120px) 0;position:relative}
 .offer-stage{position:relative;width:min(720px,100%);height:clamp(380px,55vw,520px);margin:0 auto;
@@ -655,6 +685,7 @@ body.is-admin #editToggle.on{background:var(--amber);color:#fff;border-color:tra
   <div class="mark" data-nav="#/"><span class="glyph">Frame Atelier</span><span class="sub" data-i18n="studioSub">Jeddah</span></div>
   <nav class="nav">
     <a class="navlink" data-nav="#/" data-i18n="navWork">Work</a>
+    <a class="navlink" data-nav="#/about" data-i18n="navAbout">About</a>
     <a class="navlink" data-nav="#/request" data-i18n="navRequest">Start a project</a>
   </nav>
   <div class="bar-actions">
@@ -695,9 +726,9 @@ body.is-admin #editToggle.on{background:var(--amber);color:#fff;border-color:tra
           <img class="offer-card oc4" src="assets/photo/dsc06207.jpg" alt="" loading="lazy"/>
           <img class="offer-card oc5" src="assets/film/posters/heritage.jpg" alt="" loading="lazy"/>
           <div class="offer-center">
-            <h2 class="offer-title" data-i18n="offerTitle">What we offer</h2>
-            <a class="offer-cta" data-nav="#/request" aria-label="Learn more">
-              <span data-i18n="offerCta">Learn more</span>
+            <h2 class="offer-title" data-i18n="offerTitle">About</h2>
+            <a class="offer-cta" data-nav="#/about" aria-label="Read the story">
+              <span data-i18n="offerCta">Read the story</span>
               <span class="offer-arrow" aria-hidden="true">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
               </span>
@@ -731,6 +762,67 @@ body.is-admin #editToggle.on{background:var(--amber);color:#fff;border-color:tra
   <!-- ============ CATEGORY ============ -->
   <section class="page" id="page-work">
     <div class="wrap"><div id="workView"></div></div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="page" id="page-about">
+    <div class="wrap about-wrap">
+      <a class="back" data-nav="#/"><span>←</span><span data-i18n="backHome">Back</span></a>
+
+      <div class="about-hero reveal">
+        <div class="about-eyebrow" data-i18n="aboutEyebrow">Frame Atelier — Jeddah</div>
+        <h1 class="about-h1" data-i18n="aboutH1">You don't need a videographer.<br/>You need someone who understands what you're actually selling.</h1>
+      </div>
+
+      <div class="about-body">
+        <p class="about-lede reveal" data-i18n="aboutLede">Most Saudi developers, founders, and studios I meet share the same quiet problem: extraordinary projects, ordinary presentation. A luxury compound photographed like a listing. A heritage brand launched like a startup. A cosmetic line filmed like a Shein ad. That gap — between what you built and how the market receives it — is what kills your margin.</p>
+
+        <p class="about-line reveal" data-i18n="aboutClose"><em>I close that gap.</em></p>
+
+        <div class="about-rule reveal"></div>
+
+        <h2 class="about-h2 reveal" data-i18n="aboutH2">Three languages. Most creators only speak one.</h2>
+
+        <div class="about-tri reveal">
+          <div class="about-col">
+            <div class="about-num">01</div>
+            <h3 data-i18n="ab1H">Architecture</h3>
+            <p data-i18n="ab1P">I know why a courtyard slows a viewer down, why golden-hour light sells a lifestyle before the SQM, why negative space in a lobby signals "expensive" faster than any material specification. That's not aesthetic instinct — that's how buildings actually communicate.</p>
+          </div>
+          <div class="about-col">
+            <div class="about-num">02</div>
+            <h3 data-i18n="ab2H">Cinematography</h3>
+            <p data-i18n="ab2P">I direct light, frame, and pace with intent. Every shot answers a question your buyer is silently asking. Not decoration — persuasion. Filmmaking as a positioning tool, not as a deliverable.</p>
+          </div>
+          <div class="about-col">
+            <div class="about-num">03</div>
+            <h3 data-i18n="ab3H">Personal branding</h3>
+            <p data-i18n="ab3P">Your project is a founder before it's a facade. I position developers, studios, and founders as people the market wants to work with — not vendors it compares on price. The face in front of the building matters as much as the building itself.</p>
+          </div>
+        </div>
+
+        <div class="about-rule reveal"></div>
+
+        <h2 class="about-h2 reveal" data-i18n="aboutClientsH">Selected clients</h2>
+        <p class="about-clients reveal" data-i18n="aboutClients">Mabani Aljazeera Holding · Awtar International · Roshn · Hempel · NHC · Ainy Ainak · Operamak · Saudi PMO Community · TO RUN · Elsewedy Electric · JKP · Saadi & Partners · Al Mnabr Consulting · Saden · VEVA</p>
+
+        <div class="about-rule reveal"></div>
+
+        <div class="about-pull reveal">
+          <div class="about-pull-text" data-i18n="aboutPull">"A production house sells you deliverables. An atelier sells you an outcome — <em>buyers who arrive already convinced.</em>"</div>
+          <div class="about-pull-caption" data-i18n="aboutPullCap">Why hire an atelier</div>
+        </div>
+
+        <h2 class="about-h2 reveal" data-i18n="aboutSalahH">About Salah</h2>
+        <p class="about-lede reveal" data-i18n="aboutSalah1">I'm Salah Muflehi. Founder of Frame Atelier. Based in Jeddah, working across Saudi and the Gulf.</p>
+        <p class="about-lede reveal" data-i18n="aboutSalah2">I've spent this decade watching Saudi go through the largest brand renaissance in its history — and watching most developers, studios, and founders fail to keep up. Not because they don't have the product. Because they hired production, not positioning.</p>
+        <p class="about-lede reveal" data-i18n="aboutSalah3">I speak film. I speak architecture. I speak brand. Most importantly — I speak Saudi.</p>
+
+        <div class="about-cta-row reveal">
+          <a class="cta" data-nav="#/request" data-i18n="aboutCta">If you're building something worth remembering, let's talk</a>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ============ REQUEST ============ -->
@@ -1100,7 +1192,25 @@ const I18N={
     ctaRequest:"Start a project",ctaWork:"Browse work",
     workH:"Selected work",workP:"Tap a discipline to see the work.",
     brandsTitle:"Brands we work with",
-    offerTitle:"What we offer",offerCta:"Learn more",
+    offerTitle:"About",offerCta:"Read the story",
+    navAbout:"About",
+    aboutEyebrow:"Frame Atelier — Jeddah",
+    aboutH1:"You don't need a videographer.<br/>You need someone who understands what you're actually selling.",
+    aboutLede:"Most Saudi developers, founders, and studios I meet share the same quiet problem: extraordinary projects, ordinary presentation. A luxury compound photographed like a listing. A heritage brand launched like a startup. A cosmetic line filmed like a Shein ad. That gap — between what you built and how the market receives it — is what kills your margin.",
+    aboutClose:"<em>I close that gap.</em>",
+    aboutH2:"Three languages. Most creators only speak one.",
+    ab1H:"Architecture",ab1P:"I know why a courtyard slows a viewer down, why golden-hour light sells a lifestyle before the SQM, why negative space in a lobby signals \"expensive\" faster than any material specification. That's not aesthetic instinct — that's how buildings actually communicate.",
+    ab2H:"Cinematography",ab2P:"I direct light, frame, and pace with intent. Every shot answers a question your buyer is silently asking. Not decoration — persuasion. Filmmaking as a positioning tool, not as a deliverable.",
+    ab3H:"Personal branding",ab3P:"Your project is a founder before it's a facade. I position developers, studios, and founders as people the market wants to work with — not vendors it compares on price. The face in front of the building matters as much as the building itself.",
+    aboutClientsH:"Selected clients",
+    aboutClients:"Mabani Aljazeera Holding · Awtar International · Roshn · Hempel · NHC · Ainy Ainak · Operamak · Saudi PMO Community · TO RUN · Elsewedy Electric · JKP · Saadi & Partners · Al Mnabr Consulting · Saden · VEVA",
+    aboutPull:"\"A production house sells you deliverables. An atelier sells you an outcome — <em>buyers who arrive already convinced.</em>\"",
+    aboutPullCap:"Why hire an atelier",
+    aboutSalahH:"About Salah",
+    aboutSalah1:"I'm Salah Muflehi. Founder of Frame Atelier. Based in Jeddah, working across Saudi and the Gulf.",
+    aboutSalah2:"I've spent this decade watching Saudi go through the largest brand renaissance in its history — and watching most developers, studios, and founders fail to keep up. Not because they don't have the product. Because they hired production, not positioning.",
+    aboutSalah3:"I speak film. I speak architecture. I speak brand. Most importantly — I speak Saudi.",
+    aboutCta:"If you're building something worth remembering, let's talk",
     lookH:"Track a request",lookP:"Enter your request ID to see where it is in production.",lookBtn:"Track",
     backHome:"Back",backWork:"All work",
     clientLabel:"Client",viewPdf:"View full guidelines (PDF)",reqThis:"Request this",
@@ -1137,7 +1247,25 @@ const I18N={
     ctaRequest:"ابدأ مشروعًا",ctaWork:"تصفّح الأعمال",
     workH:"أعمال مختارة",workP:"اضغط على أي تخصص لرؤية أعماله.",
     brandsTitle:"علامات نعمل معها",
-    offerTitle:"ما نقدّمه",offerCta:"اعرف المزيد",
+    offerTitle:"عن الأتيلييه",offerCta:"اقرأ الحكاية",
+    navAbout:"عن الأتيلييه",
+    aboutEyebrow:"Frame Atelier — جدة",
+    aboutH1:"لا تحتاج مصوّر فيديو.<br/>تحتاج شخصًا يفهم ما الذي تبيعه فعلًا.",
+    aboutLede:"معظم المطوّرين والمؤسسين والاستوديوهات الذين أعمل معهم في السعودية يعانون من المشكلة الهادئة نفسها: مشاريع استثنائية وعرضٌ عاديّ. مجمّع فاخر يُصوَّر كإعلان عقاري. علامة تراثية تُطلَق كأنها شركة ناشئة. خطّ تجميل يُصوَّر كإعلان Shein. تلك المسافة — بين ما بنيته وبين كيف يستقبله السوق — هي ما يقتل هامش ربحك.",
+    aboutClose:"<em>أنا أُقلّص هذه المسافة.</em>",
+    aboutH2:"ثلاث لغات. أغلب صنّاع المحتوى يتحدّثون واحدة فقط.",
+    ab1H:"العمارة",ab1P:"أعرف لماذا يُبطئ فناء داخليّ إيقاع المشاهد، ولماذا يبيع الضوء الذهبيّ نمط الحياة قبل المتر المربّع، ولماذا تُشير المساحات الفارغة في اللوبي إلى «الفخامة» أسرع من أيّ مواصفة مواد. هذه ليست غريزة جمالية — بل الطريقة التي تتحدّث بها المباني فعلًا.",
+    ab2H:"السينما",ab2P:"أُدير الضوء والإطار والإيقاع بنيّة واضحة. كل لقطة تُجيب عن سؤال يسأله المشتري بصمت. ليست زخرفة — بل إقناع. صناعة الأفلام كأداة تموقُع، لا كمخرج تسليم.",
+    ab3H:"العلامة الشخصية",ab3P:"مشروعك هو مؤسسٌ قبل أن يكون واجهة. أُموقِع المطوّرين والاستوديوهات والمؤسسين بوصفهم أشخاصًا يريد السوق العمل معهم — لا موردين تُقاس عليهم الأسعار. الوجه أمام المبنى لا يقلّ أهمية عن المبنى نفسه.",
+    aboutClientsH:"عملاء مختارون",
+    aboutClients:"مباني الجزيرة القابضة · أوتار العالمية · روشن · Hempel · NHC · عيني عينك · أوبرامك · مجتمع PMO السعودي · TO RUN · السويدي إليكتريك · JKP · سعادي وشركاه · المنابر للاستشارات · سادن · VEVA",
+    aboutPull:"«شركة الإنتاج تسلّمك مخرجات. الأتيلييه يسلّمك نتيجة — <em>مشترون يصلون وقد اقتنعوا مسبقًا.</em>»",
+    aboutPullCap:"لماذا أتيلييه",
+    aboutSalahH:"عن صلاح",
+    aboutSalah1:"أنا صلاح مفلحي. مؤسس Frame Atelier. مقيم في جدة، وأعمل في السعودية والخليج.",
+    aboutSalah2:"قضيتُ هذا العقد وأنا أراقب أكبر نهضة علامات في تاريخ السعودية — وأراقب معظم المطوّرين والاستوديوهات والمؤسسين وهم لا يلحقون بها. لا لأنهم لا يملكون المنتج. بل لأنهم استأجروا إنتاجًا، لا تموقعًا.",
+    aboutSalah3:"أتحدّث لغة الفيلم. وأتحدّث لغة العمارة. وأتحدّث لغة العلامة. والأهم — أتحدّث السعودية.",
+    aboutCta:"إذا كنت تبني شيئًا يستحق أن يُذكر، لنتحدّث",
     lookH:"تتبّع طلبًا",lookP:"أدخل رقم طلبك لمعرفة مرحلته في الإنتاج.",lookBtn:"تتبّع",
     backHome:"رجوع",backWork:"كل الأعمال",
     clientLabel:"العميل",viewPdf:"عرض الدليل كاملًا (PDF)",reqThis:"اطلب هذا",
@@ -1827,6 +1955,11 @@ function router(){
     const slug=path.replace("#/work/","");
     showPage("page-work");renderWorkView(slug);
     setFloatCta(slug);
+  } else if(path==="#/about"){
+    showPage("page-about");
+    document.querySelector('.navlink[data-nav="#/about"]').classList.add("on");
+    initReveal();
+    setFloatCta(null);
   } else if(path==="#/request"){
     showPage("page-request");
     document.querySelector('.navlink[data-nav="#/request"]').classList.add("on");
