@@ -491,6 +491,23 @@ input:focus,textarea:focus,select:focus{outline:none;border-color:var(--amber);
 .about-cta-row{margin-block-start:clamp(40px,5vw,60px);display:flex;flex-wrap:wrap;gap:12px}
 .about-cta-row .cta{padding:16px 30px;font-size:14.5px}
 
+/* ---- Contact page ---- */
+.contact-wrap{padding-block:clamp(28px,4vw,48px) clamp(80px,10vw,140px);max-width:920px}
+.contact-hero{margin:clamp(20px,3vw,40px) 0 clamp(40px,6vw,60px)}
+.contact-hero .about-h1{margin-block:14px 20px;max-width:640px}
+.contact-hero .about-blockP{max-width:56ch}
+.contact-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-block-end:36px}
+@media(min-width:640px){.contact-grid{grid-template-columns:1fr 1fr}}
+.contact-card{display:block;padding:24px;border:1px solid var(--glass-line);border-radius:var(--r);background:var(--glass);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);text-decoration:none;color:inherit;
+  transition:transform .3s var(--ease),border-color .3s var(--ease),background .3s var(--ease)}
+.contact-card:hover:not(.no-link){transform:translateY(-3px);border-color:var(--amber);background:var(--glass-2)}
+.contact-card.no-link{cursor:default}
+.cc-lbl{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3);margin-block-end:12px;font-weight:500}
+.lang-ar .cc-lbl{letter-spacing:.08em}
+.cc-val{font-size:clamp(18px,2.2vw,24px);color:var(--ink);font-weight:500;letter-spacing:-.01em;margin-block-end:6px;word-break:break-word}
+.cc-hint{font-size:13px;color:var(--ink-3);font-weight:300}
+
 /* ---- "What we offer" animated section ---- */
 .offer-section{margin-block:clamp(60px,10vw,120px) 0;position:relative}
 .offer-stage{position:relative;width:min(720px,100%);height:clamp(380px,55vw,520px);margin:0 auto;
@@ -834,6 +851,22 @@ body.is-admin #editToggle.on{background:var(--amber);color:#fff;border-color:tra
     </div>
   </section>
 
+  <!-- ============ CONTACT ============ -->
+  <section class="page" id="page-contact">
+    <div class="wrap contact-wrap">
+      <a class="back" data-nav="#/"><span>←</span><span data-i18n="backHome">Back</span></a>
+      <div class="contact-hero reveal">
+        <div class="about-eyebrow" data-i18n="contactEyebrow">Contact</div>
+        <h1 class="about-h1" data-i18n="contactH1">Let's talk.</h1>
+        <p class="about-blockP" data-i18n="contactLede">Reach out about a brand identity, a film, a shoot — or the story behind any project on this site.</p>
+      </div>
+      <div class="contact-grid reveal" id="contactGrid"></div>
+      <div class="about-cta-row reveal">
+        <a class="cta" data-nav="#/request" data-i18n="contactStart">Start a project</a>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ REQUEST ============ -->
   <section class="page" id="page-request">
     <div class="wrap">
@@ -964,6 +997,16 @@ const CONFIG = {
   statuses:["Submitted","In production","Review","Delivered"],
 };
 
+/* Contact details — edit these to your real numbers; they're used on the Contact page and PDF */
+const CONTACT={
+  email:"salahmuflehi@icloud.com",
+  phone:"",              // e.g. "+966 5X XXX XXXX" — leave empty to hide
+  whatsapp:"",           // digits only, e.g. "9665XXXXXXXX" — leave empty to hide
+  instagram:"",          // handle without @, e.g. "frameatelier" — leave empty to hide
+  linkedin:"",           // full URL, e.g. "https://linkedin.com/in/salah-muflehi"
+  location:"Jeddah, Saudi Arabia"
+};
+
 /* Invoice issuer details — edit these to your real numbers; they print on every invoice PDF */
 const ISSUER={
   name:"Frame Atelier",
@@ -980,24 +1023,42 @@ const ISSUER={
 const WORKS = [
   { slug:"identity", kind:"identity",
     title:{en:"Identity",ar:"الهويّة البصريّة"},
-    tag:{en:"Brand systems rooted in place",ar:"أنظمة علامات متجذّرة في هويّتها"},
-    poster:"assets/identity/to-run.jpg",
-    client:{en:"Saudi PMO community, TO RUN, VEVA & in-house brands",ar:"مجتمع PMO السعوديّ، TO RUN، VEVA، وعلامات داخليّة"},
-    desc:{en:"Complete brand identity systems — logo design, environment and merch mockups, brand strategy boards. From PMO Saudi to TO RUN performance apparel and VEVA, full systems rolled out across signage, flags, garments, notebooks and presentation decks.",
-          ar:"أنظمة هويّة بصريّة متكاملة — من تصميم الشعار، إلى نماذج التطبيقات البيئيّة والتسويقيّة، إلى لوحات استراتيجيّة العلامة. من مجتمع PMO السعوديّ إلى TO RUN للأزياء الرياضيّة وVEVA، أنظمة كاملة تمتدّ عبر اللافتات، والأعلام، والملابس، والدفاتر، وعروض التقديم."},
+    tag:{en:"Full brand systems, built story-first",ar:"أنظمة علامات كاملة، تُبنى بالحكاية أوّلًا"},
+    poster:"assets/identity/spmoc/spmoc-01.jpg",
+    client:{en:"FAST, SPMOC & Smart Dome",ar:"FAST، SPMOC، والقبّة الذكيّة"},
+    desc:{en:"Three full brand identity systems, each built story-first. FAST — a sportswear brand fusing Arabic culture and athletic energy, born to compete across the Middle East and the world. SPMOC — the Saudi Project Management Office Community, breaking the norm by telling PMO work as cultural preservation, not corporate ritual. Smart Dome — home security and energy-efficiency tech that lets you run your entire home from a phone. Contact us if you'd like to hear the story behind any of them.",
+          ar:"ثلاثة أنظمة هويّة بصريّة متكاملة، كلّ منها مبنيّ من الحكاية. FAST — علامة أزياء رياضيّة تجمع بين الثقافة العربيّة والطاقة الرياضيّة، وُلدت لتنافس في الشرق الأوسط والعالم. SPMOC — مجتمع مكاتب إدارة المشاريع السعوديّ، يكسر القاعدة بروايته لعمل PMO كحفظٍ ثقافيّ لا كطقسٍ مؤسّسيّ. Smart Dome — تقنيّة أمن منزليّ وكفاءة طاقة تُدير بها منزلك كاملًا من هاتفك. تواصل معنا لسماع الحكاية كاملةً وراء أيٍّ منها."},
+    groups:[
+      {key:"all",label:{en:"All",ar:"الكلّ"}},
+      {key:"fast",label:{en:"FAST",ar:"FAST"},match:/\/fast\//i},
+      {key:"spmoc",label:{en:"SPMOC",ar:"SPMOC"},match:/\/spmoc\//i},
+      {key:"dome",label:{en:"Smart Dome",ar:"القبّة الذكيّة"},match:/\/smart-dome\//i},
+    ],
     items:[
-      {type:"image",src:"assets/identity/to-run.jpg"},
-      {type:"image",src:"assets/identity/pmo-brand-idintity.jpg"},
-      {type:"image",src:"assets/identity/saudi-pmo-community-flag-mockup.jpg"},
-      {type:"image",src:"assets/identity/saudi-pmo-community-cup-mockup.jpg"},
-      {type:"image",src:"assets/identity/t-shirt-collection-mockup.jpg"},
-      {type:"image",src:"assets/identity/notebook-mockup.jpg"},
-      {type:"image",src:"assets/identity/interior-office-signage.jpg"},
-      {type:"image",src:"assets/identity/blue-modern-brainstorming-whiteboard.jpg"},
-      {type:"image",src:"assets/identity/blue-modern-brainstorming-whiteboard-2.jpg"},
-      {type:"image",src:"assets/identity/veva-logo.jpg"},
-      {type:"image",src:"assets/identity/active.jpg"},
-      {type:"image",src:"assets/identity/image-1.jpg"},
+      {type:"image",src:"assets/identity/fast/fast-01.jpg"},
+      {type:"image",src:"assets/identity/fast/fast-02.jpg"},
+      {type:"image",src:"assets/identity/fast/fast-03.jpg"},
+      {type:"image",src:"assets/identity/fast/fast-04.jpg"},
+      {type:"image",src:"assets/identity/fast/fast-05.jpg"},
+      {type:"image",src:"assets/identity/fast/fast-06.jpg"},
+      {type:"image",src:"assets/identity/fast/fast-07.jpg"},
+      {type:"image",src:"assets/identity/fast/fast-08.jpg"},
+      {type:"image",src:"assets/identity/spmoc/spmoc-01.jpg"},
+      {type:"image",src:"assets/identity/spmoc/spmoc-02.jpg"},
+      {type:"image",src:"assets/identity/spmoc/spmoc-03.jpg"},
+      {type:"image",src:"assets/identity/spmoc/spmoc-04.jpg"},
+      {type:"image",src:"assets/identity/spmoc/spmoc-05.jpg"},
+      {type:"image",src:"assets/identity/spmoc/spmoc-06.jpg"},
+      {type:"image",src:"assets/identity/spmoc/spmoc-07.jpg"},
+      {type:"image",src:"assets/identity/spmoc/spmoc-08.jpg"},
+      {type:"image",src:"assets/identity/smart-dome/dome-01.jpg"},
+      {type:"image",src:"assets/identity/smart-dome/dome-02.jpg"},
+      {type:"image",src:"assets/identity/smart-dome/dome-03.jpg"},
+      {type:"image",src:"assets/identity/smart-dome/dome-04.jpg"},
+      {type:"image",src:"assets/identity/smart-dome/dome-05.jpg"},
+      {type:"image",src:"assets/identity/smart-dome/dome-06.jpg"},
+      {type:"image",src:"assets/identity/smart-dome/dome-07.jpg"},
+      {type:"image",src:"assets/identity/smart-dome/dome-08.jpg"},
     ] },
 
   { slug:"ai-ugc", kind:"video",
@@ -1218,6 +1279,15 @@ const I18N={
     aboutClientsH:"Selected clients",
     aboutClients:"Mabani Aljazeera Holding · Awtar International · Roshn · Hempel · NHC · Ainy Ainak · Operamak · Saudi PMO Community · TO RUN · Elsewedy Electric · JKP · Saadi & Partners · Al Mnabr Consulting · Saden · VEVA",
     aboutCta:"Start a project",
+    hearStory:"Hear the story",
+    contactEyebrow:"Contact",contactH1:"Let's talk.",contactLede:"Reach out about a brand identity, a film, a shoot — or the story behind any project on this site.",
+    contactStart:"Start a project",
+    ccEmail:"Email",ccEmailHint:"Best for briefs and detailed questions.",
+    ccWa:"WhatsApp",ccWaHint:"Fastest way to say hello.",
+    ccPhone:"Phone",ccPhoneHint:"For scheduled calls.",
+    ccIg:"Instagram",ccIgHint:"Behind the scenes.",
+    ccLi:"LinkedIn",ccLiHint:"For collaborators and press.",
+    ccLoc:"Studio",ccLocHint:"Working globally from here.",
     lookH:"Track a request",lookP:"Enter your request ID to see where it is in production.",lookBtn:"Track",
     backHome:"Back",backWork:"All work",
     clientLabel:"Client",viewPdf:"View full guidelines (PDF)",reqThis:"Request this",
@@ -1271,6 +1341,15 @@ const I18N={
     aboutClientsH:"عملاءٌ مختارون",
     aboutClients:"مباني الجزيرة القابضة · أوتار العالميّة · روشن · Hempel · NHC · عيني عينك · أوبرامك · مجتمع PMO السعوديّ · TO RUN · السويدي إليكتريك · JKP · سعادي وشركاه · المنابر للاستشارات · سادن · VEVA",
     aboutCta:"ابدأ مشروعًا",
+    hearStory:"اسمع الحكاية",
+    contactEyebrow:"تواصل",contactH1:"لنتحدّث.",contactLede:"تواصل معنا لأيّ هويّة بصريّة، فيلم، أو تصوير — أو لسماع الحكاية وراء أيّ مشروع على هذا الموقع.",
+    contactStart:"ابدأ مشروعًا",
+    ccEmail:"البريد الإلكترونيّ",ccEmailHint:"الأنسب للموجزات والأسئلة التفصيليّة.",
+    ccWa:"واتساب",ccWaHint:"أسرع طريقة للسلام.",
+    ccPhone:"هاتف",ccPhoneHint:"للمكالمات المجدولة.",
+    ccIg:"إنستقرام",ccIgHint:"خلف الكواليس.",
+    ccLi:"لينكدإن",ccLiHint:"للمتعاونين والصحافة.",
+    ccLoc:"الاستوديو",ccLocHint:"نعمل عالميًّا من هنا.",
     lookH:"تتبّع طلبًا",lookP:"أدخل رقم طلبك لمعرفة مرحلته في الإنتاج.",lookBtn:"تتبّع",
     backHome:"رجوع",backWork:"كلّ الأعمال",
     clientLabel:"العميل",viewPdf:"عرض الدليل كاملًا (PDF)",reqThis:"اطلب هذه الخدمة",
@@ -1883,9 +1962,10 @@ function renderWorkView(slug){
         return '<button data-grp="'+g.key+'"'+(i===0?' class="on"':'')+'>'+(g.label[lang]||g.label.en)+'<span class="count">'+count+'</span></button>';
       }).join("")+'</div>';
     }
+    const contactBtn=w.slug==="identity"?'<a class="cta outline" data-nav="#/contact">'+t("hearStory")+'</a>':"";
     body='<p style="font-size:14.5px;color:var(--ink-2);font-weight:300;line-height:1.6;max-width:62ch;margin-block-end:24px">'+wt(w,"desc")+'</p>'+tabsHtml+
       '<div class="gallery" data-sort-slug="'+w.slug+'">'+items.map(i=>'<div class="shot" data-key="'+escapeHtml(itemKey(i))+'" data-src="'+i.src+'"><img src="'+i.src+'" loading="lazy" alt=""/></div>').join("")+'</div>'+
-      '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-block-start:26px">'+pdfBtns+'<a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div>';
+      '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-block-start:26px">'+pdfBtns+contactBtn+'<a class="cta" data-nav="#/request?s='+w.slug+'">'+t("reqThis")+'</a></div>';
     setTimeout(()=>{
       host.querySelectorAll(".gallery .shot").forEach(el=>el.addEventListener("click",()=>{
         if(document.body.classList.contains("editing"))return;
@@ -1965,6 +2045,11 @@ function router(){
     document.querySelector('.navlink[data-nav="#/about"]').classList.add("on");
     initReveal();
     setFloatCta(null);
+  } else if(path==="#/contact"){
+    showPage("page-contact");
+    renderContact();
+    initReveal();
+    setFloatCta(null);
   } else if(path==="#/request"){
     showPage("page-request");
     document.querySelector('.navlink[data-nav="#/request"]').classList.add("on");
@@ -1979,6 +2064,30 @@ function router(){
     setFloatCta(null);
   }
 }
+function renderContact(){
+  const g=document.getElementById("contactGrid");if(!g)return;
+  const cards=[];
+  if(CONTACT.email){
+    cards.push('<a class="contact-card" href="mailto:'+CONTACT.email+'"><div class="cc-lbl">'+t("ccEmail")+'</div><div class="cc-val">'+escapeHtml(CONTACT.email)+'</div><div class="cc-hint">'+t("ccEmailHint")+'</div></a>');
+  }
+  if(CONTACT.whatsapp){
+    cards.push('<a class="contact-card" href="https://wa.me/'+CONTACT.whatsapp+'" target="_blank" rel="noopener"><div class="cc-lbl">'+t("ccWa")+'</div><div class="cc-val">+'+escapeHtml(CONTACT.whatsapp)+'</div><div class="cc-hint">'+t("ccWaHint")+'</div></a>');
+  }
+  if(CONTACT.phone){
+    cards.push('<a class="contact-card" href="tel:'+CONTACT.phone.replace(/\s+/g,"")+'"><div class="cc-lbl">'+t("ccPhone")+'</div><div class="cc-val">'+escapeHtml(CONTACT.phone)+'</div><div class="cc-hint">'+t("ccPhoneHint")+'</div></a>');
+  }
+  if(CONTACT.instagram){
+    cards.push('<a class="contact-card" href="https://instagram.com/'+CONTACT.instagram+'" target="_blank" rel="noopener"><div class="cc-lbl">'+t("ccIg")+'</div><div class="cc-val">@'+escapeHtml(CONTACT.instagram)+'</div><div class="cc-hint">'+t("ccIgHint")+'</div></a>');
+  }
+  if(CONTACT.linkedin){
+    cards.push('<a class="contact-card" href="'+CONTACT.linkedin+'" target="_blank" rel="noopener"><div class="cc-lbl">'+t("ccLi")+'</div><div class="cc-val">LinkedIn</div><div class="cc-hint">'+t("ccLiHint")+'</div></a>');
+  }
+  if(CONTACT.location){
+    cards.push('<div class="contact-card no-link"><div class="cc-lbl">'+t("ccLoc")+'</div><div class="cc-val">'+escapeHtml(CONTACT.location)+'</div><div class="cc-hint">'+t("ccLocHint")+'</div></div>');
+  }
+  g.innerHTML=cards.join("");
+}
+
 let floatCtaObs=null;
 function setFloatCta(slug){
   const btn=document.getElementById("floatCta");
