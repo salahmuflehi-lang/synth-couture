@@ -1000,10 +1000,10 @@ const CONFIG = {
 /* Contact details — edit these to your real numbers; they're used on the Contact page and PDF */
 const CONTACT={
   email:"salahmuflehi@icloud.com",
-  phone:"",              // e.g. "+966 5X XXX XXXX" — leave empty to hide
-  whatsapp:"",           // digits only, e.g. "9665XXXXXXXX" — leave empty to hide
-  instagram:"",          // handle without @, e.g. "frameatelier" — leave empty to hide
-  linkedin:"",           // full URL, e.g. "https://linkedin.com/in/salah-muflehi"
+  phone:"+966 50 642 9355",
+  whatsapp:"966506429355",
+  instagram:"salah.muf",
+  linkedin:"https://www.linkedin.com/in/salah-hared-64346b197/",
   location:"Jeddah, Saudi Arabia"
 };
 
@@ -1034,32 +1034,10 @@ const WORKS = [
       {key:"spmoc",label:{en:"SPMOC",ar:"SPMOC"},match:/\/spmoc\//i},
       {key:"dome",label:{en:"Smart Dome",ar:"القبّة الذكيّة"},match:/\/smart-dome\//i},
     ],
-    items:[
-      {type:"image",src:"assets/identity/fast/fast-01.jpg"},
-      {type:"image",src:"assets/identity/fast/fast-02.jpg"},
-      {type:"image",src:"assets/identity/fast/fast-03.jpg"},
-      {type:"image",src:"assets/identity/fast/fast-04.jpg"},
-      {type:"image",src:"assets/identity/fast/fast-05.jpg"},
-      {type:"image",src:"assets/identity/fast/fast-06.jpg"},
-      {type:"image",src:"assets/identity/fast/fast-07.jpg"},
-      {type:"image",src:"assets/identity/fast/fast-08.jpg"},
-      {type:"image",src:"assets/identity/spmoc/spmoc-01.jpg"},
-      {type:"image",src:"assets/identity/spmoc/spmoc-02.jpg"},
-      {type:"image",src:"assets/identity/spmoc/spmoc-03.jpg"},
-      {type:"image",src:"assets/identity/spmoc/spmoc-04.jpg"},
-      {type:"image",src:"assets/identity/spmoc/spmoc-05.jpg"},
-      {type:"image",src:"assets/identity/spmoc/spmoc-06.jpg"},
-      {type:"image",src:"assets/identity/spmoc/spmoc-07.jpg"},
-      {type:"image",src:"assets/identity/spmoc/spmoc-08.jpg"},
-      {type:"image",src:"assets/identity/smart-dome/dome-01.jpg"},
-      {type:"image",src:"assets/identity/smart-dome/dome-02.jpg"},
-      {type:"image",src:"assets/identity/smart-dome/dome-03.jpg"},
-      {type:"image",src:"assets/identity/smart-dome/dome-04.jpg"},
-      {type:"image",src:"assets/identity/smart-dome/dome-05.jpg"},
-      {type:"image",src:"assets/identity/smart-dome/dome-06.jpg"},
-      {type:"image",src:"assets/identity/smart-dome/dome-07.jpg"},
-      {type:"image",src:"assets/identity/smart-dome/dome-08.jpg"},
-    ] },
+    items:(function(){
+      const build=(folder,prefix,count)=>Array.from({length:count},(_,i)=>({type:"image",src:"assets/identity/"+folder+"/"+prefix+"-"+String(i+1).padStart(2,"0")+".jpg"}));
+      return[...build("fast","fast",22),...build("spmoc","spmoc",35),...build("smart-dome","dome",18)];
+    })() },
 
   { slug:"ai-ugc", kind:"video",
     title:{en:"AI UGC",ar:"محتوى UGC بالذكاء الاصطناعيّ"},
